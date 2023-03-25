@@ -1,6 +1,7 @@
 package components;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,6 +19,13 @@ public class FavoriteListContent {
 	private JScrollPane scrollPane;
 	private JTable favoriteTable;
 
+	private JPanel optionPanel;
+	private JButton delete;
+	private JButton clearList;
+
+	private final Color DELETE_BUTTON_COLOR = Color.getHSBColor(0, 33, 78);
+	private final Color CLEAR_BUTTON_COLOR = Color.getHSBColor(0, 0.5f, 0.85f);
+
 	public FavoriteListContent() {
 		favoriteListContentPanel = new JPanel(new BorderLayout());
 		favoriteListContentPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
@@ -34,7 +42,15 @@ public class FavoriteListContent {
 				{ "4", "Nhiều", "Anh", "Anh->Việt", "" },
 		};
 		favoriteTable = new JTable(dataTest, columnTitles);
+		favoriteTable.setPreferredScrollableViewportSize(new Dimension(800, 265));
 		scrollPane = new JScrollPane(favoriteTable);
+		favoriteTable.setFillsViewportHeight(true);
+
+		optionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		delete = new JButton("Xóa");
+		delete.setBackground(DELETE_BUTTON_COLOR);
+		clearList = new JButton("Xóa danh sách");
+		clearList.setBackground(CLEAR_BUTTON_COLOR);
 	}
 
 	public JPanel getFavoriteListContentPanel() {
@@ -43,6 +59,10 @@ public class FavoriteListContent {
 
 		favoriteListDetailsPanel.add(scrollPane);
 		favoriteListContentPanel.add(favoriteListDetailsPanel, BorderLayout.CENTER);
+
+		optionPanel.add(delete);
+		optionPanel.add(clearList);
+		favoriteListContentPanel.add(optionPanel, BorderLayout.SOUTH);
 
 		return favoriteListContentPanel;
 	}

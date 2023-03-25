@@ -6,7 +6,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DateFormatter;
 
 import org.jdatepicker.JDatePicker;
@@ -35,8 +34,15 @@ public class StatiscialContent {
 	private JPanel detailTablePanel;
 	private JTable detailTable;
 	private JScrollPane scrollPane;
-	private DefaultTableModel defaultTableModel;
 	private String[] columnTitles = { "STT", "Từ", "Số lần tra cứu", "Loại tra cứu", "Lựa chọn" };
+
+	private JPanel optionPanel;
+	private JButton favorite;
+	private JButton delete;
+
+	private final Color BUTTON_COLOR = Color.getHSBColor(120f / 360f, 0.5f, 0.8f);
+	private final Color FAVORITE_BUTTON_COLOR = Color.getHSBColor(204, 18, 69);
+	private final Color DELETE_BUTTON_COLOR = Color.getHSBColor(0, 33, 78);
 
 	public Properties setValuei18nStrings() {
 		Properties p = new Properties();
@@ -70,7 +76,7 @@ public class StatiscialContent {
 		startDate = new JDatePickerImpl(new JDatePanelImpl(model, setValuei18nStrings()), dateFormatter);
 		endDate = new JDatePickerImpl(new JDatePanelImpl(model, setValuei18nStrings()), dateFormatter);
 		btnDisplay = new JButton("Hiển thị");
-		btnDisplay.setBackground(Color.getHSBColor(120f / 360f, 0.5f, 0.8f));
+		btnDisplay.setBackground(BUTTON_COLOR);
 
 		String[][] testData = {
 				{ "1", "Anh", "9", "abc", "" },
@@ -129,13 +135,73 @@ public class StatiscialContent {
 				{ "3", "Em", "7", "abc", "" },
 				{ "3", "Em", "7", "abc", "" },
 				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "3", "Em", "7", "abc", "" },
+				{ "10", "Em", "7", "abc", "" },
 		};
 		detailTablePanel = new JPanel(new FlowLayout());
 		detailTable = new JTable(testData, columnTitles);
-		detailTable.setSize(100, 20);
+		detailTable.setPreferredScrollableViewportSize(new Dimension(800, 230));
 		scrollPane = new JScrollPane(detailTable);
-		// defaultTableModel = new DefaultTableModel(columnTitles, 0);
-		// detailTable.setModel(defaultTableModel);
+		detailTable.setFillsViewportHeight(true);
+
+		optionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		favorite = new JButton("Yêu thích");
+		favorite.setBackground(FAVORITE_BUTTON_COLOR);
+		delete = new JButton("Xóa khỏi từ điển");
+		delete.setBackground(DELETE_BUTTON_COLOR);
+
 	}
 
 	public JPanel getStatiscialContentPanel() {
@@ -158,6 +224,10 @@ public class StatiscialContent {
 
 		detailTablePanel.add(scrollPane);
 		statiscialContentPanel.add(detailTablePanel, BorderLayout.CENTER);
+
+		optionPanel.add(favorite);
+		optionPanel.add(delete);
+		statiscialContentPanel.add(optionPanel, BorderLayout.SOUTH);
 
 		registerListenerHandlers();
 		return statiscialContentPanel;

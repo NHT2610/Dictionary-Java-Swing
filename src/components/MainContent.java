@@ -37,6 +37,9 @@ public class MainContent {
 	private JLabel outputLabel;
 	private JTextArea outputTextArea;
 
+	private JPanel resetPanel;
+	private JButton btnReset;
+
 	public MainContent() {
 		mainContentPanel = new JPanel(new BorderLayout());
 		mainContentPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
@@ -68,10 +71,14 @@ public class MainContent {
 
 		outputPanel = new JPanel(new FlowLayout());
 		outputLabel = new JLabel("Nghĩa: ");
-		outputTextArea = new JTextArea(15, 70);
+		outputTextArea = new JTextArea(13, 70);
 		outputTextArea.setFont(new Font("Arial", Font.PLAIN, 15));
 		outputTextArea.setEditable(false);
 		outputTextArea.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+
+		resetPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		btnReset = new JButton("Tải lại từ điển");
+		btnReset.setBackground(Color.getHSBColor(100 / 360f, 0.2f, 0.8f));
 	}
 
 	public JPanel getMainContentPanel() {
@@ -98,6 +105,10 @@ public class MainContent {
 		outputPanel.add(outputTextArea);
 		translatePanel.add(outputPanel);
 		mainContentPanel.add(translatePanel, BorderLayout.CENTER);
+
+		// ==================== RESET SIDE ====================
+		resetPanel.add(btnReset);
+		mainContentPanel.add(resetPanel, BorderLayout.SOUTH);
 
 		// ==================== EVENT HANDLER FOR BUTTONS ====================
 		registerListenerHandlers();
