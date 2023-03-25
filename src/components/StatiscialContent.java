@@ -36,7 +36,7 @@ public class StatiscialContent {
 	private JTable detailTable;
 	private JScrollPane scrollPane;
 	private DefaultTableModel defaultTableModel;
-	private String[] columnTitles = { "Số thứ tự", "Từ", "Số lần tra cứu", "Loại tra cứu", "Lựa chọn" };
+	private String[] columnTitles = { "STT", "Từ", "Số lần tra cứu", "Loại tra cứu", "Lựa chọn" };
 
 	public Properties setValuei18nStrings() {
 		Properties p = new Properties();

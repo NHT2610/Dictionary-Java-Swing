@@ -9,6 +9,7 @@ public class MainCardManager {
 	private JPanel mainContent;
 	private JPanel statishcialContent;
 	private JPanel addNewWordContent;
+	private JPanel favoriteListContent;
 
 	public MainCardManager() {
 		cardLayout = new CardLayout();
@@ -22,12 +23,16 @@ public class MainCardManager {
 
 		AddNewWordContent addNewWordContentObject = new AddNewWordContent();
 		addNewWordContent = addNewWordContentObject.getAddNewWordContentPanel();
+
+		FavoriteListContent favoriteListContentObject = new FavoriteListContent();
+		favoriteListContent = favoriteListContentObject.getFavoriteListContentPanel();
 	}
 
 	public JPanel getMainCardManagerPanel() {
 		cardPanel.add(mainContent, "Look Up");
 		cardPanel.add(statishcialContent, "Statiscial");
 		cardPanel.add(addNewWordContent, "Add A New Word");
+		cardPanel.add(favoriteListContent, "Favorite List");
 		return cardPanel;
 	}
 
