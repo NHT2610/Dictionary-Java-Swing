@@ -87,7 +87,7 @@ public class MenuBar {
 		btnFavoriteList.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(cardPanel, "Add A New Word");
+				cardLayout.show(cardPanel, "Favorite List");
 				activeButton.setBackground(BUTTON_COLOR);
 				btnFavoriteList.setBackground(ACTIVE_BUTTON_COLOR);
 				activeButton = btnFavoriteList;
