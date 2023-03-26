@@ -6,6 +6,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+
 import java.awt.*;
 
 public class FavoriteListContent {
@@ -15,6 +18,7 @@ public class FavoriteListContent {
 	private JLabel tableName;
 
 	private JPanel favoriteListDetailsPanel;
+	private DefaultTableModel tableModel;
 	private final String[] columnTitles = { "STT", "Từ", "Nghĩa", "Loại tra cứu", "Lựa chọn" };
 	private JScrollPane scrollPane;
 	private JTable favoriteTable;
@@ -41,7 +45,13 @@ public class FavoriteListContent {
 				{ "3", "Em", "Em", "Việt->Anh", "" },
 				{ "4", "Nhiều", "Anh", "Anh->Việt", "" },
 		};
-		favoriteTable = new JTable(dataTest, columnTitles);
+
+		tableModel = new DefaultTableModel(dataTest, columnTitles);
+		favoriteTable = new JTable(tableModel);
+		// Cài font chữ đậm cho header columns
+		JTableHeader tableHeader = favoriteTable.getTableHeader();
+		tableHeader.setFont(tableHeader.getFont().deriveFont(Font.BOLD));
+		
 		favoriteTable.setPreferredScrollableViewportSize(new Dimension(800, 265));
 		scrollPane = new JScrollPane(favoriteTable);
 		favoriteTable.setFillsViewportHeight(true);

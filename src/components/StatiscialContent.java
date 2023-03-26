@@ -6,6 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.text.DateFormatter;
 
 import org.jdatepicker.JDatePicker;
@@ -32,6 +34,7 @@ public class StatiscialContent {
 	private JButton btnDisplay;
 
 	private JPanel detailTablePanel;
+	private DefaultTableModel tableModel;
 	private JTable detailTable;
 	private JScrollPane scrollPane;
 	private String[] columnTitles = { "STT", "Từ", "Số lần tra cứu", "Loại tra cứu", "Lựa chọn" };
@@ -191,7 +194,12 @@ public class StatiscialContent {
 				{ "10", "Em", "7", "abc", "" },
 		};
 		detailTablePanel = new JPanel(new FlowLayout());
-		detailTable = new JTable(testData, columnTitles);
+		tableModel = new DefaultTableModel(testData, columnTitles);
+		detailTable = new JTable(tableModel);
+		// Cài font chữ đậm cho header columns
+		JTableHeader tableHeader = detailTable.getTableHeader();
+		tableHeader.setFont(tableHeader.getFont().deriveFont(Font.BOLD));
+		
 		detailTable.setPreferredScrollableViewportSize(new Dimension(800, 230));
 		scrollPane = new JScrollPane(detailTable);
 		detailTable.setFillsViewportHeight(true);
