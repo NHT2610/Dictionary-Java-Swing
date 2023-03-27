@@ -4,6 +4,8 @@ import javax.swing.*;
 import components.*;
 import components.MenuBar;
 import components.SplashScreen;
+import models.*;
+
 import java.awt.*;
 
 public class App extends JPanel {
@@ -13,10 +15,39 @@ public class App extends JPanel {
 	private JPanel mainCard;
 	private JPanel footer;
 
+	private static Dictionary dictionaryEngViet;
+	private static Dictionary dictionaryVietEng;
+
+	private static final String XML_FILE_PATH = "./data/dictionary files/";
+
+	private static void prepareData() {
+		String path1 = XML_FILE_PATH + "Anh_Viet.xml";
+		if (dictionaryEngViet.loadDataFromXML(path1)) {
+			System.out.println("Load English-Vietnamese successfully!");
+		} else {
+			JOptionPane.showInternalMessageDialog(
+					null,
+					"Tải dữ liệu từ điển Anh Việt bị lỗi",
+					"Lỗi",
+					JOptionPane.ERROR_MESSAGE);
+		}
+		String path2 = XML_FILE_PATH + "Viet_Anh.xml";
+		if (dictionaryVietEng.loadDataFromXML(path2)) {
+			System.out.println("Load Vietnamese-English successfully!");
+		} else {
+			JOptionPane.showInternalMessageDialog(
+					null,
+					"Tải dữ liệu từ điển Việt Anh bị lỗi",
+					"Lỗi",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 	private static void createAndShowGUI() {
 		JFrame frame = new JFrame("Từ Điển Anh-Việt/Việt-Anh");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		App app = new App();
+		prepareData();
 		app.addComponentsToPane(frame.getContentPane());
 		// frame.pack();
 		frame.setSize(1000, 510);
@@ -53,6 +84,17 @@ public class App extends JPanel {
 		header = new JPanel();
 		menuBar = new JPanel();
 		footer = new JPanel();
+
+		dictionaryEngViet = new Dictionary();
+		dictionaryVietEng = new Dictionary();
+	}
+
+	public static Dictionary getDictionaryEngViet() {
+		return dictionaryEngViet;
+	}
+
+	public static Dictionary getDictionaryVietEng() {
+		return dictionaryVietEng;
 	}
 
 	public static void main(String[] args) throws Exception {

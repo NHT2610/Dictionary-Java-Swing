@@ -10,6 +10,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import app.App;
+import controllers.LookUpToken;
+import controllers.MainHandler;
+
 import java.awt.event.*;
 
 import java.awt.*;
@@ -23,6 +28,7 @@ public class MainContent {
 	private JMenuBar languagePickerMenuBar;
 	private JMenu languagePickerMenu;
 	private JMenuItem english, vietnamese;
+	private JMenuItem currentOption;
 
 	private JPanel favoriteAndRemoveButtonPanel;
 	private JButton btnAddToFavorite;
@@ -53,6 +59,7 @@ public class MainContent {
 		languagePickerMenu = new JMenu("Tiếng Anh (Mặc định)");
 		english = new JMenuItem("Tiếng Anh (Mặc định)");
 		vietnamese = new JMenuItem("Tiếng Việt");
+		currentOption = english;
 
 		favoriteAndRemoveButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		btnAddToFavorite = new JButton("Yêu thích");
@@ -110,22 +117,58 @@ public class MainContent {
 		resetPanel.add(btnReset);
 		mainContentPanel.add(resetPanel, BorderLayout.SOUTH);
 
-		// ==================== EVENT HANDLER FOR BUTTONS ====================
+		// ==================== EVENT HANDLER ====================
 		registerListenerHandlers();
 
 		return mainContentPanel;
 	}
 
 	private void registerListenerHandlers() {
-		// ----- Button add a word to favorite -----
+		// Menu language picker
+		english.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentOption = english;
+				languagePickerMenu.setText(currentOption.getText());
+			}
+		});
+		vietnamese.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentOption = vietnamese;
+				languagePickerMenu.setText(currentOption.getText());
+			}
+		});
+
+		// ----- Button look up -----
 		btnLookUp.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(
-						null,
-						"Không tìm thấy từ bạn vừa nhập",
-						"Lỗi",
-						JOptionPane.ERROR_MESSAGE);
+				String keyWord = inputText.getText();
+				if (keyWord.equals("")) {
+					JOptionPane.showMessageDialog(
+							null,
+							"Bạn chưa nhập từ khóa",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				String choose = currentOption.getText();
+				LookUpToken result = new LookUpToken(false, "");
+				if (choose.equals("Tiếng Anh (Mặc định)")) {
+					result = MainHandler.lookup(keyWord, App.getDictionaryEngViet());
+				} else if (choose.equals("Tiếng Việt")) {
+					result = MainHandler.lookup(keyWord, App.getDictionaryVietEng());
+				}
+				if (result.getStatus()) {
+					outputTextArea.setText(result.getMessage());
+				} else {
+					JOptionPane.showMessageDialog(
+							null,
+							"Không tìm thấy từ \"" + keyWord + "\" trong từ điển",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 
