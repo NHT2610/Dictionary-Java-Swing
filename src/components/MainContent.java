@@ -229,5 +229,44 @@ public class MainContent {
 						JOptionPane.OK_CANCEL_OPTION);
 			}
 		});
+
+		// ----- Button reload dictionary
+		btnReset.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String dictionaryType = "";
+				if (currentOption.getText().equals("Tiếng Anh (Mặc định)")) {
+					dictionaryType = "Anh-Việt";
+				} else if (currentOption.getText().equals("Tiếng Việt")) {
+					dictionaryType = "Việt-Anh";
+				}
+
+				int choice = JOptionPane.showConfirmDialog(
+						null,
+						"Bạn có muốn tải lại dữ liệu gốc của từ điển " + dictionaryType
+								+ "\nNếu bạn nhấn OK, toàn bộ dữ liệu từ điển sẽ được khôi phục về từ điển gốc,"
+								+ "\nđồng nghĩa mọi từ bạn thêm vào sẽ bị xóa và các từ đã xóa sẽ quay trở lại",
+						"Xác nhận",
+						JOptionPane.OK_CANCEL_OPTION);
+
+				if (choice == JOptionPane.OK_OPTION) {
+					if (dictionaryType.equals("Anh-Việt")) {
+						App.getDictionaryEngViet().loadDataFromXML(App.XML_FILE_PATH + "Anh_Viet.xml");
+						System.out.println("Reload English-Vietnamese successfully");
+						App.getDictionaryEngViet().saveDataToXML("Anh_Viet.xml");
+
+					} else if (dictionaryType.equals("Việt-Anh")) {
+						App.getDictionaryVietEng().loadDataFromXML(App.XML_FILE_PATH + "Viet_Anh.xml");
+						System.out.println("Reload English-Vietnamese successfully");
+						App.getDictionaryVietEng().saveDataToXML("Viet_Anh.xml");
+					}
+					JOptionPane.showMessageDialog(
+							null,
+							"Khôi phục từ điển " + dictionaryType + " gốc thành công!",
+							"Thông báo",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
 	}
 }
