@@ -1,12 +1,16 @@
 package models;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,6 +28,11 @@ public class Dictionary {
 	public Dictionary(String storagePath) {
 		dictionary = new HashMap<String, String>();
 		this.storagePath = storagePath;
+	}
+
+	public boolean changeStoragePath(String newPath) {
+		storagePath = newPath;
+		return true;
 	}
 
 	public boolean loadDataFromXML(String filePath) {
@@ -60,26 +69,51 @@ public class Dictionary {
 		return dictionary;
 	}
 
-	public boolean saveDataToFile(String fileName) {
+	public boolean saveDataToXML(String fileName) {
 		try {
 			String path = storagePath + fileName;
-			FileWriter fileWriter = new FileWriter(path);
-			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			// Tạo một đối tượng DocumentBuilderFactory để tạo đối tượng DocumentBuilder
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
 
-			for (String key : dictionary.keySet()) {
-				String value = dictionary.get(key);
-				String line = key + "=" + value;
-				bufferedWriter.write(line);
-				bufferedWriter.newLine();
+			// Tạo một Document mới
+			Document doc = builder.newDocument();
+
+			// Tạo một phần tử "dictionary" là phần tử gốc của Document
+			Element rootElement = doc.createElement("dictionary");
+			doc.appendChild(rootElement);
+
+			// Duyệt qua các cặp key-value trong HashMap và tạo các phần tử "word" và "meaning" tương ứng
+			for (Map.Entry<String, String> entry: dictionary.entrySet()) {
+				String key = entry.getKey();
+				String value = entry.getValue();
+
+				Element wordElement = doc.createElement("word");
+				wordElement.appendChild(doc.createTextNode(key));
+
+				Element meaningElement = doc.createElement("meaning");
+				meaningElement.appendChild(doc.createTextNode(value));
+
+				Element recordElement = doc.createElement("record");
+				recordElement.appendChild(wordElement);
+				recordElement.appendChild(meaningElement);
+
+				rootElement.appendChild(recordElement);
 			}
-			bufferedWriter.close();
-			fileWriter.close();
-			return true;
 
-		} catch (IOException e) {
-			System.out.println("Error writing file: " + e.getMessage());
+			// Tạo một đối tượng Transformer để ghi đối tượng DOMSource ra file .xml
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File(path));
+			transformer.transform(source, result);
+
+			return true;
+		} catch (Exception e) {
 			return false;
 		}
 	}
-
 }

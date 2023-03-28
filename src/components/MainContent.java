@@ -8,15 +8,17 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import app.App;
 import controllers.LookUpToken;
 import controllers.MainHandler;
+import models.FavoriteItem;
 
 import java.awt.event.*;
-
+import java.util.Date;
 import java.awt.*;
 
 public class MainContent {
@@ -41,6 +43,7 @@ public class MainContent {
 	private JButton btnLookUp;
 	private JPanel outputPanel;
 	private JLabel outputLabel;
+	private JScrollPane scrollPane;
 	private JTextArea outputTextArea;
 
 	private JPanel resetPanel;
@@ -78,10 +81,13 @@ public class MainContent {
 
 		outputPanel = new JPanel(new FlowLayout());
 		outputLabel = new JLabel("Nghĩa: ");
-		outputTextArea = new JTextArea(13, 70);
+		outputTextArea = new JTextArea(13, 60);
+		outputTextArea.setLineWrap(false);
 		outputTextArea.setFont(new Font("Arial", Font.PLAIN, 15));
-		outputTextArea.setEditable(false);
 		outputTextArea.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+		scrollPane = new JScrollPane(outputTextArea);
+		scrollPane.setViewportView(outputTextArea);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 		resetPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		btnReset = new JButton("Tải lại từ điển");
@@ -109,7 +115,7 @@ public class MainContent {
 		inputPanel.add(btnLookUp);
 		translatePanel.add(inputPanel, BorderLayout.NORTH);
 		outputPanel.add(outputLabel);
-		outputPanel.add(outputTextArea);
+		outputPanel.add(scrollPane);
 		translatePanel.add(outputPanel);
 		mainContentPanel.add(translatePanel, BorderLayout.CENTER);
 
@@ -176,11 +182,39 @@ public class MainContent {
 		btnAddToFavorite.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(
-						null,
-						"Đã thêm từ vào danh sách yêu thích",
-						"Thông báo",
-						JOptionPane.INFORMATION_MESSAGE);
+				String keyWord = inputText.getText();
+				if (keyWord.equals("")) {
+					JOptionPane.showMessageDialog(
+							null,
+							"Bạn chưa nhập từ khóa",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				String choose = currentOption.getText();
+				String lookupType = "";
+				LookUpToken result = new LookUpToken(false, "");
+				if (choose.equals("Tiếng Anh (Mặc định)")) {
+					lookupType = "Anh->Việt";
+					result = MainHandler.lookup(keyWord, App.getDictionaryEngViet());
+				} else if (choose.equals("Tiếng Việt")) {
+					lookupType = "Việt->Anh";
+					result = MainHandler.lookup(keyWord, App.getDictionaryVietEng());
+				}
+				if (result.getStatus()) {
+					FavoriteItem newFavoriteItem = new FavoriteItem(keyWord, result.getMessage(), lookupType, new Date());
+					App.getFavorites().add(newFavoriteItem);
+					JOptionPane.showMessageDialog(
+							null,
+							"Đã thêm từ \"" + keyWord + "\" vào danh sách yêu thích",
+							"Thông báo",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(
+							null,
+							"Không tìm thấy từ \"" + keyWord + "\" trong từ điển",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 
