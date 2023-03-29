@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface ReadAndWriteItem<Item> {
-	Item readItem(String path, BufferedReader br);
+	Item readItem(BufferedReader br);
 
-	boolean writeItem(String path, BufferedWriter bw);
+	boolean writeItem(BufferedWriter bw);
 
 	static <Item extends ReadAndWriteItem<Item>> boolean writeArrayList(String path, ArrayList<Item> list) {
 		try {
@@ -18,7 +18,7 @@ public interface ReadAndWriteItem<Item> {
 					new OutputStreamWriter(
 							new FileOutputStream(path), "utf-8"));
 			for (Item item : list) {
-				item.writeItem(path, bw);
+				item.writeItem(bw);
 				bw.newLine();
 			}
 			bw.close();
@@ -28,7 +28,19 @@ public interface ReadAndWriteItem<Item> {
 		}
 	}
 
-	static <Item extends ReadAndWriteItem<Item>> boolean writeHashMap(String path, HashMap<String, Item> map) {
-		return true;
+	static <T extends ReadAndWriteItem<T>> boolean writeHashMap(
+			String path, HashMap<String, HashMap<LookupInformation, Integer>> map) {
+		try {
+			BufferedWriter bw = new BufferedWriter(
+					new OutputStreamWriter(
+							new FileOutputStream(path), "utf-8"));
+			for (String key : map.keySet()) {
+				new HistoryItem(key, map.get(key)).writeItem(bw);
+			}
+			bw.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }

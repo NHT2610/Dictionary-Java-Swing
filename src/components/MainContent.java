@@ -168,6 +168,7 @@ public class MainContent {
 				}
 				if (result.getStatus()) {
 					outputTextArea.setText(result.getMessage());
+					MainHandler.recordHistory(keyWord, choose, new Date());
 				} else {
 					JOptionPane.showMessageDialog(
 							null,
@@ -201,7 +202,7 @@ public class MainContent {
 					result = MainHandler.lookup(keyWord, App.getDictionaryVietEng());
 				}
 				if (result.getStatus()) {
-					FavoriteItem newFavoriteItem = new FavoriteItem(keyWord, result.getMessage(), lookupType, new Date());
+					FavoriteItem newFavoriteItem = new FavoriteItem(keyWord, lookupType, new Date());
 					App.getFavorites().add(newFavoriteItem);
 					JOptionPane.showMessageDialog(
 							null,

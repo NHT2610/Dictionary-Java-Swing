@@ -23,13 +23,15 @@ public class App extends JPanel {
 	private static Dictionary dictionaryEngViet;
 	private static Dictionary dictionaryVietEng;
 	private static ArrayList<FavoriteItem> favorites;
-	private static HashMap<String, HistoryItem> history;
+	private static HashMap<String, HashMap<LookupInformation, Integer>> history;
 	// ========== Constants ==========
 	public static final String XML_FILE_PATH = "./data/dictionary files/";
 	public static final String DICTIONARIES_STORAGES_PATH = "./data/storages/dictionaries/";
+	public static final String HISTORY_STORAGES_PATH = "./data/storages/history/";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
 	private static void prepareData() {
+		// ==================== LOAD DICTIONARIES DATA ====================
 		String path1 = DICTIONARIES_STORAGES_PATH + "Anh_Viet.xml";
 		if (dictionaryEngViet.loadDataFromXML(path1)) {
 			System.out.println("Load English-Vietnamese successfully!");
@@ -50,9 +52,11 @@ public class App extends JPanel {
 					"Lỗi",
 					JOptionPane.ERROR_MESSAGE);
 		}
+
+		// ==================== LOAD HISTORY DATA ====================
 		if (!history.containsKey(DATE_FORMAT.format(new Date()))) {
-			System.out.println(DATE_FORMAT.format(new Date()));
-			history.put(DATE_FORMAT.format(new Date()), new HistoryItem());
+			HistoryItem newItem = new HistoryItem();
+			history.put(newItem.getDate(), newItem.getHistoryOfThatDate());
 		}
 	}
 
@@ -101,7 +105,13 @@ public class App extends JPanel {
 		dictionaryEngViet = new Dictionary(DICTIONARIES_STORAGES_PATH);
 		dictionaryVietEng = new Dictionary(DICTIONARIES_STORAGES_PATH);
 		favorites = new ArrayList<FavoriteItem>();
-		history = new HashMap<String, HistoryItem>();
+		history = new HashMap<String, HashMap<LookupInformation, Integer>>();
+	}
+
+	public static void saveData() {
+		getDictionaryEngViet().saveDataToXML("Anh_Viet.xml");
+		getDictionaryVietEng().saveDataToXML("Viet_Anh.xml");
+		ReadAndWriteItem.writeHashMap(HISTORY_STORAGES_PATH + "history.txt", getHistory());
 	}
 
 	public static Dictionary getDictionaryEngViet() {
@@ -116,7 +126,7 @@ public class App extends JPanel {
 		return favorites;
 	}
 
-	public static HashMap<String, HistoryItem> getHistory() {
+	public static HashMap<String, HashMap<LookupInformation, Integer>> getHistory() {
 		return history;
 	}
 
@@ -127,6 +137,15 @@ public class App extends JPanel {
 			public void run() {
 				createAndShowGUI();
 				splash.dispose();
+			}
+		});
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				try {
+					saveData();
+				} catch (Exception e) {
+					System.out.println("Error: " + e.getMessage());
+				}
 			}
 		});
 	}

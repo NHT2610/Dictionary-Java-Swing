@@ -4,15 +4,15 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.util.Date;
 
+import app.App;
+
 public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 	private String word;
-	private String meaning;
 	private String lookupType;
 	private Date dateAdded;
 
-	public FavoriteItem(String word, String meaning, String lookupType, Date dateAdded) {
+	public FavoriteItem(String word, String lookupType, Date dateAdded) {
 		this.word = word;
-		this.meaning = meaning;
 		this.lookupType = lookupType;
 		this.dateAdded = dateAdded;
 	}
@@ -22,7 +22,12 @@ public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 	}
 
 	public String getMeaning() {
-		return meaning;
+		if (lookupType.equals("Anh-Việt")) {
+			return App.getDictionaryEngViet().getDictionaryData().get(word);
+		} else if (lookupType.equals("Việt-Anh")) {
+			return App.getDictionaryVietEng().getDictionaryData().get(word);
+		}
+		return "";
 	}
 
 	public String getLookupType() {
@@ -34,13 +39,13 @@ public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 	}
 
 	@Override
-	public FavoriteItem readItem(String path, BufferedReader br) {
+	public FavoriteItem readItem(BufferedReader br) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'readItem'");
 	}
 
 	@Override
-	public boolean writeItem(String path, BufferedWriter bw) {
+	public boolean writeItem(BufferedWriter bw) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'writeItem'");
 	}
