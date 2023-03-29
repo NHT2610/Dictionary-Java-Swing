@@ -33,7 +33,7 @@ public class LookupInformation implements ReadAndWriteItem<LookupInformation> {
 	}
 
 	@Override
-	public LookupInformation readItem(BufferedReader br) {
+	public LookupInformation readItem(BufferedReader br, String line) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'readItem'");
 	}

@@ -39,7 +39,7 @@ public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 	}
 
 	@Override
-	public FavoriteItem readItem(BufferedReader br) {
+	public FavoriteItem readItem(BufferedReader br, String line) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'readItem'");
 	}

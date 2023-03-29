@@ -37,9 +37,22 @@ public class HistoryItem implements ReadAndWriteItem<HistoryItem> {
 	}
 
 	@Override
-	public HistoryItem readItem(BufferedReader br) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'readItem'");
+	public HistoryItem readItem(BufferedReader br, String line) {
+		try {
+			String[] historyFields = line.split("=>");
+			this.date = historyFields[0];
+			String[] historyData = historyFields[1].split("##");
+			for (String info : historyData) {
+				String[] wordInfo = info.split("\\$");
+				String[] infoFields = wordInfo[1].split("&");
+				this.historyOfThatDate.put(
+					new LookupInformation(wordInfo[0], infoFields[1]), Integer.parseInt(infoFields[0]));
+			}
+			return this;
+		} catch (Exception e) {
+			System.out.println("Error: " + e.getMessage());
+			return null;
+		}
 	}
 
 	@Override

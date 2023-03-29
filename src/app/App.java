@@ -36,24 +36,23 @@ public class App extends JPanel {
 		if (dictionaryEngViet.loadDataFromXML(path1)) {
 			System.out.println("Load English-Vietnamese successfully!");
 		} else {
-			JOptionPane.showInternalMessageDialog(
-					null,
-					"Tải dữ liệu từ điển Anh Việt bị lỗi",
-					"Lỗi",
-					JOptionPane.ERROR_MESSAGE);
+			System.out.println("English-Vietnamese dictionary loading failed");
 		}
 		String path2 = DICTIONARIES_STORAGES_PATH + "Viet_Anh.xml";
 		if (dictionaryVietEng.loadDataFromXML(path2)) {
 			System.out.println("Load Vietnamese-English successfully!");
 		} else {
-			JOptionPane.showInternalMessageDialog(
-					null,
-					"Tải dữ liệu từ điển Việt Anh bị lỗi",
-					"Lỗi",
-					JOptionPane.ERROR_MESSAGE);
+			System.out.println("Vietnamese-English dictionary loading failed");
 		}
 
-		// ==================== LOAD HISTORY DATA ====================
+		// // ==================== LOAD HISTORY DATA ====================
+		String path3 = HISTORY_STORAGES_PATH + "history.txt";
+		boolean check = ReadAndWriteItem.readHashMap(path3);
+		if (!check) {
+			System.out.println("History data loading failed");
+		} else {
+			System.out.println("Load history data successfully!");
+		}
 		if (!history.containsKey(DATE_FORMAT.format(new Date()))) {
 			HistoryItem newItem = new HistoryItem();
 			history.put(newItem.getDate(), newItem.getHistoryOfThatDate());

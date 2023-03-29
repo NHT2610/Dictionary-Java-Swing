@@ -17,7 +17,7 @@ public class MainHandler {
 	}
 
 	public static void recordHistory(String word, String choice, Date date) {
-		System.out.println("recording");
+		//System.out.println("recording");
 		String lookupType = "";
 		if (choice.equals("Tiếng Anh (Mặc định)")) {
 			lookupType = "Anh-Việt";

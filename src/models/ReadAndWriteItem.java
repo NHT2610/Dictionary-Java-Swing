@@ -2,13 +2,18 @@ package models;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import app.App;
+
 public interface ReadAndWriteItem<Item> {
-	Item readItem(BufferedReader br);
+	Item readItem(BufferedReader br, String line);
 
 	boolean writeItem(BufferedWriter bw);
 
@@ -28,6 +33,26 @@ public interface ReadAndWriteItem<Item> {
 		}
 	}
 
+	static <T extends ReadAndWriteItem<T>> boolean readHashMap(String path) {
+		try {
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(
+							new FileInputStream(path), "utf-8"));
+			String line = br.readLine();
+			while (line != null) {
+				HistoryItem newItem = new HistoryItem();
+				newItem.readItem(br, line);
+				App.getHistory().put(newItem.getDate(), newItem.getHistoryOfThatDate());
+				line = br.readLine();
+			}
+			br.close();
+			return true;
+		} catch (IOException e) {
+			System.out.println("Error reading file " + e.getMessage());
+			return false;
+		}
+	}
+
 	static <T extends ReadAndWriteItem<T>> boolean writeHashMap(
 			String path, HashMap<String, HashMap<LookupInformation, Integer>> map) {
 		try {
@@ -36,6 +61,7 @@ public interface ReadAndWriteItem<Item> {
 							new FileOutputStream(path), "utf-8"));
 			for (String key : map.keySet()) {
 				new HistoryItem(key, map.get(key)).writeItem(bw);
+				bw.newLine();
 			}
 			bw.close();
 			return true;
