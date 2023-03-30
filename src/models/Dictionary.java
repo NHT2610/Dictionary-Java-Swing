@@ -35,6 +35,15 @@ public class Dictionary {
 		return true;
 	}
 
+	public String removeAWord(String word) {
+		String meaningDelWord = dictionary.get(word);
+		String delWord = dictionary.remove(word);
+		if (delWord != null && delWord.equals(meaningDelWord)) {
+			return word;
+		}
+		return null;
+	}
+
 	public boolean loadDataFromXML(String filePath) {
 		try {
 			// Tạo một đối tượng DocumentBuilderFactory để tạo đối tượng DocumentBuilder

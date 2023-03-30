@@ -1,1 +1,4 @@
-(logic học)##Anh->Việt##Thu Mar 30 10:23:27 ICT 2023
+flew##Anh->Việt##30/03/2023
+abc##Anh->Việt##30/03/2023
+happy##Anh->Việt##30/03/2023
+hiền nhân##Việt->Anh##30/03/2023

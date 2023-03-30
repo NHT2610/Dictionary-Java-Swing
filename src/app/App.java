@@ -46,7 +46,7 @@ public class App extends JPanel {
 			System.out.println("Vietnamese-English dictionary loading failed");
 		}
 
-		// // ==================== LOAD HISTORY DATA ====================
+		// ==================== LOAD HISTORY DATA ====================
 		String path3 = HISTORY_STORAGES_PATH + "history.txt";
 		boolean check = ReadAndWriteItem.readHashMap(path3);
 		if (!check) {
@@ -57,6 +57,15 @@ public class App extends JPanel {
 		if (!history.containsKey(DATE_FORMAT.format(new Date()))) {
 			HistoryItem newItem = new HistoryItem();
 			history.put(newItem.getDate(), newItem.getHistoryOfThatDate());
+		}
+
+		// ==================== LOAD FAVORITES DATA ====================
+		String path4 = FAVORITES_STORAGES_PATH + "favorites.txt";
+		check = ReadAndWriteItem.readArrayList(path4, favorites, FavoriteItem.class);
+		if (!check) {
+			System.out.println("Favorites data loading failed");
+		} else {
+			System.out.println("Load favorites data successfully!");
 		}
 	}
 

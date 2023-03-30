@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import app.App;
 import controllers.LookUpToken;
 import controllers.MainHandler;
+import models.Dictionary;
 import models.FavoriteItem;
 
 import java.awt.event.*;
@@ -151,6 +152,7 @@ public class MainContent {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String keyWord = inputText.getText();
+				// ----- Kiểm tra ô nhập từ có bị bỏ trống hay không
 				if (keyWord.equals("")) {
 					JOptionPane.showMessageDialog(
 							null,
@@ -160,6 +162,8 @@ public class MainContent {
 					return;
 				}
 				String choose = currentOption.getText();
+
+				// ----- Tra cứu từ
 				LookUpToken result = new LookUpToken(false, "");
 				if (choose.equals("Tiếng Anh (Mặc định)")) {
 					result = MainHandler.lookup(keyWord, App.getDictionaryEngViet());
@@ -184,6 +188,7 @@ public class MainContent {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String keyWord = inputText.getText();
+				// ----- Kiểm tra ô nhập từ có bị bỏ trống hay không
 				if (keyWord.equals("")) {
 					JOptionPane.showMessageDialog(
 							null,
@@ -193,6 +198,8 @@ public class MainContent {
 				}
 				String choose = currentOption.getText();
 				String lookupType = "";
+
+				// ----- Tra cứu từ để xem thử từ có tồn tại trong từ điển hay không
 				LookUpToken result = new LookUpToken(false, "");
 				if (choose.equals("Tiếng Anh (Mặc định)")) {
 					lookupType = "Anh->Việt";
@@ -202,13 +209,24 @@ public class MainContent {
 					result = MainHandler.lookup(keyWord, App.getDictionaryVietEng());
 				}
 				if (result.getStatus()) {
-					FavoriteItem newFavoriteItem = new FavoriteItem(keyWord, lookupType, new Date());
-					App.getFavorites().add(newFavoriteItem);
-					JOptionPane.showMessageDialog(
-							null,
-							"Đã thêm từ \"" + keyWord + "\" vào danh sách yêu thích",
-							"Thông báo",
-							JOptionPane.INFORMATION_MESSAGE);
+					// ----- Kiểm tra từ đó đã được thêm vào danh sách yêu thích trước đó chưa
+					boolean isExisted = MainHandler.isExistedInFavoritesList(App.getFavorites(),
+							new FavoriteItem(keyWord, lookupType, new Date()));
+					if (isExisted) {
+						JOptionPane.showMessageDialog(
+								null,
+								"Từ \"" + keyWord + "\" đã được thêm vào danh sách yêu thích trước đó",
+								"Thông báo",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						FavoriteItem newFavoriteItem = new FavoriteItem(keyWord, lookupType, new Date());
+						App.getFavorites().add(newFavoriteItem);
+						JOptionPane.showMessageDialog(
+								null,
+								"Đã thêm từ \"" + keyWord + "\" vào danh sách yêu thích",
+								"Thông báo",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
 				} else {
 					JOptionPane.showMessageDialog(
 							null,
@@ -223,11 +241,52 @@ public class MainContent {
 		btnRemoveFromDictionaries.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showConfirmDialog(
-						null,
-						"Bạn có muốn xóa từ ra khỏi từ điển",
-						"Xác nhận",
-						JOptionPane.OK_CANCEL_OPTION);
+				String keyWord = inputText.getText();
+				// ----- Kiểm tra ô nhập từ có bị bỏ trống hay không
+				if (keyWord.equals("")) {
+					JOptionPane.showMessageDialog(
+							null,
+							"Bạn chưa nhập từ khóa",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				String choose = currentOption.getText();
+				String lookupType = "";
+				Dictionary dictionary = new Dictionary();
+
+				// ----- Tra cứu từ để xem thử từ có tồn tại trong từ điển hay không
+				LookUpToken result = new LookUpToken(false, "");
+				if (choose.equals("Tiếng Anh (Mặc định)")) {
+					lookupType = "Anh->Việt";
+					dictionary = App.getDictionaryEngViet();
+					result = MainHandler.lookup(keyWord, App.getDictionaryEngViet());
+				} else if (choose.equals("Tiếng Việt")) {
+					lookupType = "Việt->Anh";
+					dictionary = App.getDictionaryVietEng();
+					result = MainHandler.lookup(keyWord, App.getDictionaryVietEng());
+				}
+				if (result.getStatus()) {
+					int choice = JOptionPane.showConfirmDialog(
+							null,
+							"Bạn có muốn xóa từ \"" + keyWord + "\" và nghĩa của nó ra khỏi từ điển?",
+							"Xác nhận",
+							JOptionPane.OK_CANCEL_OPTION);
+					if (choice == JOptionPane.OK_OPTION) {
+						if (MainHandler.removeAWordFromDictionary(dictionary, keyWord, lookupType)) {
+							JOptionPane.showMessageDialog(
+									null,
+									"Đã xóa từ \"" + keyWord + "\" và nghĩa của nó ra khỏi từ điển",
+									"Thông báo",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+				} else {
+					JOptionPane.showMessageDialog(
+							null,
+							"Không tồn tại từ \"" + keyWord + "\" trong từ điển " + lookupType,
+							"Thông báo",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		});
 
@@ -236,6 +295,7 @@ public class MainContent {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String dictionaryType = "";
+				// ----- Xác định loại từ điển
 				if (currentOption.getText().equals("Tiếng Anh (Mặc định)")) {
 					dictionaryType = "Anh-Việt";
 				} else if (currentOption.getText().equals("Tiếng Việt")) {
