@@ -46,8 +46,14 @@ public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 
 	@Override
 	public boolean writeItem(BufferedWriter bw) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'writeItem'");
+		try {
+			String line = word + "##" + lookupType + "##" + dateAdded.toString();
+			bw.write(line);
+			return true;
+		} catch (Exception e) {
+			System.out.println("Error reading favorite item: " + e.getMessage());
+			return false;
+		}
 	}
 
 }

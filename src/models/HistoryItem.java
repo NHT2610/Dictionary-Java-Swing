@@ -46,7 +46,7 @@ public class HistoryItem implements ReadAndWriteItem<HistoryItem> {
 				String[] wordInfo = info.split("\\$");
 				String[] infoFields = wordInfo[1].split("&");
 				this.historyOfThatDate.put(
-					new LookupInformation(wordInfo[0], infoFields[1]), Integer.parseInt(infoFields[0]));
+						new LookupInformation(wordInfo[0], infoFields[1]), Integer.parseInt(infoFields[0]));
 			}
 			return this;
 		} catch (Exception e) {

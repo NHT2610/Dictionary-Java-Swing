@@ -20,9 +20,9 @@ public class MainHandler {
 		//System.out.println("recording");
 		String lookupType = "";
 		if (choice.equals("Tiếng Anh (Mặc định)")) {
-			lookupType = "Anh-Việt";
+			lookupType = "Anh->Việt";
 		} else if (choice.equals("Tiếng Việt")) {
-			lookupType = "Việt-Anh";
+			lookupType = "Việt->Anh";
 		}
 		LookupInformation newLookup = new LookupInformation(word, lookupType);
 		HashMap<LookupInformation, Integer> temp = App.getHistory().get(App.DATE_FORMAT.format(date));

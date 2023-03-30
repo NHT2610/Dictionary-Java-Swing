@@ -28,6 +28,7 @@ public class App extends JPanel {
 	public static final String XML_FILE_PATH = "./data/dictionary files/";
 	public static final String DICTIONARIES_STORAGES_PATH = "./data/storages/dictionaries/";
 	public static final String HISTORY_STORAGES_PATH = "./data/storages/history/";
+	public static final String FAVORITES_STORAGES_PATH = "./data/storages/favorites/";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
 	private static void prepareData() {
@@ -110,7 +111,8 @@ public class App extends JPanel {
 	public static void saveData() {
 		getDictionaryEngViet().saveDataToXML("Anh_Viet.xml");
 		getDictionaryVietEng().saveDataToXML("Viet_Anh.xml");
-		ReadAndWriteItem.writeHashMap(HISTORY_STORAGES_PATH + "history.txt", getHistory());
+		ReadAndWriteItem.writeHashMap(HISTORY_STORAGES_PATH + "history.txt", history);
+		ReadAndWriteItem.writeArrayList(FAVORITES_STORAGES_PATH + "favorites.txt", favorites);
 	}
 
 	public static Dictionary getDictionaryEngViet() {
