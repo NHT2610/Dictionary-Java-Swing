@@ -4,6 +4,7 @@ import javax.swing.*;
 import components.*;
 import components.MenuBar;
 import components.SplashScreen;
+import controllers.ReadAndWriteItem;
 import models.*;
 
 import java.awt.*;
@@ -24,12 +25,20 @@ public class App extends JPanel {
 	private static Dictionary dictionaryVietEng;
 	private static ArrayList<FavoriteItem> favorites;
 	private static HashMap<String, HashMap<LookupInformation, Integer>> history;
+	private static ArrayList<UserWord> userWordsList;
 	// ========== Constants ==========
 	public static final String XML_FILE_PATH = "./data/dictionary files/";
 	public static final String DICTIONARIES_STORAGES_PATH = "./data/storages/dictionaries/";
 	public static final String HISTORY_STORAGES_PATH = "./data/storages/history/";
 	public static final String FAVORITES_STORAGES_PATH = "./data/storages/favorites/";
+	public static final String USER_WORDS_PATH = "./data/storages/user words/";
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+	// ========== Modified track flags ==========
+	public static boolean dictionaryEngViet_flag;
+	public static boolean dictionaryVietEng_flag;
+	public static boolean favorites_flag;
+	public static boolean history_flag;
+	public static boolean userWordsList_flag;
 
 	private static void prepareData() {
 		// ==================== LOAD DICTIONARIES DATA ====================
@@ -66,6 +75,15 @@ public class App extends JPanel {
 			System.out.println("Favorites data loading failed");
 		} else {
 			System.out.println("Load favorites data successfully!");
+		}
+
+		// ==================== LOAD FAVORITES DATA ====================
+		String path5 = USER_WORDS_PATH + "user_words.txt";
+		check = ReadAndWriteItem.readArrayList(path5, userWordsList, UserWord.class);
+		if (!check) {
+			System.out.println("User words data loading failed");
+		} else {
+			System.out.println("Load user words data successfully!");
 		}
 	}
 
@@ -115,13 +133,31 @@ public class App extends JPanel {
 		dictionaryVietEng = new Dictionary(DICTIONARIES_STORAGES_PATH);
 		favorites = new ArrayList<FavoriteItem>();
 		history = new HashMap<String, HashMap<LookupInformation, Integer>>();
+		userWordsList = new ArrayList<UserWord>();
+
+		dictionaryEngViet_flag = false;
+		dictionaryVietEng_flag = false;
+		favorites_flag = false;
+		history_flag = false;
+		userWordsList_flag = false;
 	}
 
 	public static void saveData() {
-		getDictionaryEngViet().saveDataToXML("Anh_Viet.xml");
-		getDictionaryVietEng().saveDataToXML("Viet_Anh.xml");
-		ReadAndWriteItem.writeHashMap(HISTORY_STORAGES_PATH + "history.txt", history);
-		ReadAndWriteItem.writeArrayList(FAVORITES_STORAGES_PATH + "favorites.txt", favorites);
+		if (dictionaryEngViet_flag) {
+			getDictionaryEngViet().saveDataToXML("Anh_Viet.xml");
+		}
+		if (dictionaryVietEng_flag) {
+			getDictionaryVietEng().saveDataToXML("Viet_Anh.xml");
+		}
+		if (history_flag) {
+			ReadAndWriteItem.writeHashMap(HISTORY_STORAGES_PATH + "history.txt", history);
+		}
+		if (favorites_flag) {
+			ReadAndWriteItem.writeArrayList(FAVORITES_STORAGES_PATH + "favorites.txt", favorites);
+		}
+		if (userWordsList_flag) {
+			ReadAndWriteItem.writeArrayList(USER_WORDS_PATH + "user_words.txt", userWordsList);
+		}
 	}
 
 	public static Dictionary getDictionaryEngViet() {
@@ -138,6 +174,10 @@ public class App extends JPanel {
 
 	public static HashMap<String, HashMap<LookupInformation, Integer>> getHistory() {
 		return history;
+	}
+
+	public static ArrayList<UserWord> getUserWordsList() {
+		return userWordsList;
 	}
 
 	public static void main(String[] args) throws Exception {

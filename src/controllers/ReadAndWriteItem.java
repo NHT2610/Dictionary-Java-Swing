@@ -1,4 +1,4 @@
-package models;
+package controllers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import app.App;
+import models.HistoryItem;
+import models.LookupInformation;
 
 public interface ReadAndWriteItem<Item> {
 	Item readItem(BufferedReader br, String line);
@@ -45,7 +47,9 @@ public interface ReadAndWriteItem<Item> {
 				Constructor<Item> constructor = clazz.getDeclaredConstructor();
 				Item item = constructor.newInstance();
 				item.readItem(br, line);
-				list.add(item);
+				if (item != null) {
+					list.add(item);
+				}
 				line = br.readLine();
 			}
 			br.close();

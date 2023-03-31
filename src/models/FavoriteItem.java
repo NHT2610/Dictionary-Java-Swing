@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import app.App;
+import controllers.ReadAndWriteItem;
 
 public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 	private String word;
@@ -14,6 +15,12 @@ public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 
 	public FavoriteItem() {
 
+	}
+
+	public FavoriteItem(String word, String lookupType) {
+		this.word = word;
+		this.lookupType = lookupType;
+		this.dateAdded = new Date();
 	}
 
 	public FavoriteItem(String word, String lookupType, Date dateAdded) {
@@ -27,9 +34,9 @@ public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 	}
 
 	public String getMeaning() {
-		if (lookupType.equals("Anh-Việt")) {
+		if (lookupType.equals("Anh->Việt")) {
 			return App.getDictionaryEngViet().getDictionaryData().get(word);
-		} else if (lookupType.equals("Việt-Anh")) {
+		} else if (lookupType.equals("Việt->Anh")) {
 			return App.getDictionaryVietEng().getDictionaryData().get(word);
 		}
 		return "";
@@ -44,10 +51,9 @@ public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 	}
 
 	public static int getIndexOfElement(ArrayList<FavoriteItem> list, String word, String lookupType) {
-		for (FavoriteItem item : list) {
-			if (item.getWord().equals(word) && item.getLookupType().equals(lookupType)) {
-				return list.indexOf(item);
-			}
+		FavoriteItem newItem = new FavoriteItem(word, lookupType);
+		if (list.contains(newItem)) {
+			return list.indexOf(newItem);
 		}
 		return -1;
 	}
@@ -67,6 +73,9 @@ public class FavoriteItem implements ReadAndWriteItem<FavoriteItem> {
 	@Override
 	public FavoriteItem readItem(BufferedReader br, String line) {
 		String[] parts = line.split("##");
+		if (parts.length != 3) {
+			return null;
+		}
 		this.word = parts[0];
 		this.lookupType = parts[1];
 		try {

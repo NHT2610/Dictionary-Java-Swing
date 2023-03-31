@@ -3,6 +3,8 @@ package models;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 
+import controllers.ReadAndWriteItem;
+
 public class LookupInformation implements ReadAndWriteItem<LookupInformation> {
 	private String word;
 	private String lookupType;

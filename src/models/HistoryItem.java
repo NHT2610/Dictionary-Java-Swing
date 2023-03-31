@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import app.App;
+import controllers.ReadAndWriteItem;
 
 public class HistoryItem implements ReadAndWriteItem<HistoryItem> {
 	private String date;

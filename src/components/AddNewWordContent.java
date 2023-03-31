@@ -7,6 +7,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.*;
 
@@ -23,12 +25,12 @@ public class AddNewWordContent {
 	private JMenuItem english, vietnamese;
 
 	private JPanel addNewWordFormPanel;
-	private JPanel newKeyWordPanel;
-	private JPanel meaningOfTheNewWordPanel;
+	private GridBagConstraints gbc;
 	private JLabel newKeyWordLabel;
 	private JLabel meaningOfTheNewWordLabel;
 	private JTextField newKeyWordText;
-	private JTextField meaningOfTheNewWordText;
+	private JScrollPane scrollPane;
+	private JTextArea meaningOfTheNewWordText;
 
 	private JPanel btnAddNewWordPanel;
 	private JButton btnAddNewWord;
@@ -49,25 +51,28 @@ public class AddNewWordContent {
 		english = new JMenuItem("Tiếng Anh");
 		vietnamese = new JMenuItem("Tiếng Việt");
 
-		addNewWordFormPanel = new JPanel(new GridLayout(1, 2));
+		addNewWordFormPanel = new JPanel(new GridBagLayout());
+		gbc = new GridBagConstraints();
 
-		newKeyWordPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		newKeyWordLabel = new JLabel("Từ khóa: ");
-		newKeyWordText = new JTextField(20);
+		newKeyWordText = new JTextField(35);
 		newKeyWordText.setFont(new Font("Arial", Font.PLAIN, 17));
 		newKeyWordText.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-		
-		meaningOfTheNewWordPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
 		meaningOfTheNewWordLabel = new JLabel("Nghĩa: ");
-		meaningOfTheNewWordText = new JTextField(20);
+		meaningOfTheNewWordText = new JTextArea(10, 35);
+		meaningOfTheNewWordText.setLineWrap(false);
 		meaningOfTheNewWordText.setFont(new Font("Arial", Font.PLAIN, 17));
 		meaningOfTheNewWordText.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+		scrollPane = new JScrollPane(meaningOfTheNewWordText);
+		scrollPane.setViewportView(meaningOfTheNewWordText);
+		// scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 		btnAddNewWordPanel = new JPanel(new FlowLayout());
 		btnAddNewWord = new JButton("Thêm");
 		btnAddNewWord.setBackground(Color.getHSBColor(120f / 360f, 0.5f, 0.8f));
 	}
-	
+
 	public JPanel getAddNewWordContentPanel() {
 		titlePanel.add(titleText);
 		JPanel titleAndPickerPanel = new JPanel(new BorderLayout());
@@ -82,13 +87,34 @@ public class AddNewWordContent {
 
 		addNewWordContentPanel.add(titleAndPickerPanel, BorderLayout.NORTH);
 
-		newKeyWordPanel.add(newKeyWordLabel);
-		newKeyWordPanel.add(newKeyWordText);
-		addNewWordFormPanel.add(newKeyWordPanel);
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.1;
+		gbc.insets = new Insets(0, 0, 5, 0);
+		addNewWordFormPanel.add(newKeyWordLabel, gbc);
 
-		meaningOfTheNewWordPanel.add(meaningOfTheNewWordLabel);
-		meaningOfTheNewWordPanel.add(meaningOfTheNewWordText);
-		addNewWordFormPanel.add(meaningOfTheNewWordPanel);
+		gbc.gridx = 1;
+		gbc.gridwidth = 5;
+		gbc.weightx = 0.9;
+		gbc.insets = new Insets(0, 0, 5, 40);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		addNewWordFormPanel.add(newKeyWordText, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.1;
+		gbc.insets = new Insets(5, 65, 10, 0);
+		addNewWordFormPanel.add(meaningOfTheNewWordLabel, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridwidth = 5;
+		gbc.insets = new Insets(5, 0, 10, 40);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.9; // Giãn rộng theo chiều ngang khi panel được kéo dài
+		gbc.weighty = 1.0; // Giãn rộng theo chiều dọc khi panel được kéo dài
+		addNewWordFormPanel.add(scrollPane, gbc);
 
 		addNewWordContentPanel.add(addNewWordFormPanel, BorderLayout.CENTER);
 

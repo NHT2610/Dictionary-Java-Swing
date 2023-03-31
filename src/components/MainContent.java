@@ -17,6 +17,7 @@ import controllers.LookUpToken;
 import controllers.MainHandler;
 import models.Dictionary;
 import models.FavoriteItem;
+import models.UserWord;
 
 import java.awt.event.*;
 import java.util.Date;
@@ -74,7 +75,7 @@ public class MainContent {
 		translatePanel = new JPanel(new BorderLayout());
 		inputPanel = new JPanel(new FlowLayout());
 		inputLabel = new JLabel("Từ khóa: ");
-		inputText = new JTextField(40);
+		inputText = new JTextField(45);
 		inputText.setFont(new Font("Arial", Font.PLAIN, 17));
 		inputText.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 		btnLookUp = new JButton("Tra cứu");
@@ -88,7 +89,7 @@ public class MainContent {
 		outputTextArea.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 		scrollPane = new JScrollPane(outputTextArea);
 		scrollPane.setViewportView(outputTextArea);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		// scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 		resetPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		btnReset = new JButton("Tải lại từ điển");
@@ -220,6 +221,10 @@ public class MainContent {
 								JOptionPane.INFORMATION_MESSAGE);
 					} else {
 						FavoriteItem newFavoriteItem = new FavoriteItem(keyWord, lookupType, new Date());
+						// ----- Đánh dấu lại từ, nếu nó là từ do người dùng thêm vào
+						if (App.getUserWordsList().contains(new UserWord(keyWord, lookupType))) {
+							MainHandler.markFavorite(App.getUserWordsList(), new UserWord(keyWord, lookupType));
+						}
 						App.getFavorites().add(newFavoriteItem);
 						JOptionPane.showMessageDialog(
 								null,
@@ -312,11 +317,13 @@ public class MainContent {
 
 				if (choice == JOptionPane.OK_OPTION) {
 					if (dictionaryType.equals("Anh-Việt")) {
+						MainHandler.removeAllUserWordsByLookupType(App.getUserWordsList(), "Anh->Việt");
 						App.getDictionaryEngViet().loadDataFromXML(App.XML_FILE_PATH + "Anh_Viet.xml");
 						System.out.println("Reload English-Vietnamese successfully");
 						App.getDictionaryEngViet().saveDataToXML("Anh_Viet.xml");
 
 					} else if (dictionaryType.equals("Việt-Anh")) {
+						MainHandler.removeAllUserWordsByLookupType(App.getUserWordsList(), "Việt->Anh");
 						App.getDictionaryVietEng().loadDataFromXML(App.XML_FILE_PATH + "Viet_Anh.xml");
 						System.out.println("Reload English-Vietnamese successfully");
 						App.getDictionaryVietEng().saveDataToXML("Viet_Anh.xml");
