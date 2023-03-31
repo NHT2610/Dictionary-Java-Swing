@@ -5,3 +5,15 @@ hiền nhân##Việt->Anh##30/03/2023
 nuisance##Anh->Việt##31/03/2023
 fall in love##Anh->Việt##31/03/2023
 Nguyễn Hữu Trực##Việt->Anh##31/03/2023
+computer system engineer##Anh->Việt##31/03/2023
+outstanding##Anh->Việt##31/03/2023
+giao phối##Việt->Anh##31/03/2023
+nấp bóng##Việt->Anh##31/03/2023
+cảm tính##Việt->Anh##31/03/2023
+presentment##Anh->Việt##31/03/2023
+conversation##Anh->Việt##31/03/2023
+fake##Anh->Việt##31/03/2023
+service station##Anh->Việt##31/03/2023
+application##Anh->Việt##31/03/2023
+gió trăng##Việt->Anh##31/03/2023
+hello##Anh->Việt##31/03/2023

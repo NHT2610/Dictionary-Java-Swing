@@ -91,6 +91,7 @@ public class MenuBar {
 				activeButton.setBackground(BUTTON_COLOR);
 				btnFavoriteList.setBackground(ACTIVE_BUTTON_COLOR);
 				activeButton = btnFavoriteList;
+				FavoriteListContent.updateTableData();
 			}
 		});
 	}
