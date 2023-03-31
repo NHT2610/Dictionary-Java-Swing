@@ -6,11 +6,18 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import app.App;
+import controllers.MainHandler;
+import models.Dictionary;
+
 import java.awt.*;
+import java.awt.event.*;
 
 public class AddNewWordContent {
 	private JPanel addNewWordContentPanel;
@@ -23,6 +30,7 @@ public class AddNewWordContent {
 	private JMenuBar dictionaryPickerMenuBar;
 	private JMenu dictionaryPickerMenu;
 	private JMenuItem english, vietnamese;
+	private JMenuItem currentOption;
 
 	private JPanel addNewWordFormPanel;
 	private GridBagConstraints gbc;
@@ -47,9 +55,10 @@ public class AddNewWordContent {
 		pickerLabel = new JLabel("Loại từ điển: ");
 		dictionaryPickerMenuBar = new JMenuBar();
 		dictionaryPickerMenuBar.setBackground(Color.LIGHT_GRAY);
-		dictionaryPickerMenu = new JMenu("Tiếng Anh");
-		english = new JMenuItem("Tiếng Anh");
-		vietnamese = new JMenuItem("Tiếng Việt");
+		dictionaryPickerMenu = new JMenu("Anh-Việt (Mặc định)");
+		english = new JMenuItem("Anh-Việt (Mặc định)");
+		vietnamese = new JMenuItem("Việt-Anh");
+		currentOption = english;
 
 		addNewWordFormPanel = new JPanel(new GridBagLayout());
 		gbc = new GridBagConstraints();
@@ -121,7 +130,102 @@ public class AddNewWordContent {
 		btnAddNewWordPanel.add(btnAddNewWord);
 		addNewWordContentPanel.add(btnAddNewWordPanel, BorderLayout.SOUTH);
 
+		registerListenerHandlers();
+
 		return addNewWordContentPanel;
 	}
 
+	private void registerListenerHandlers() {
+		// Menu dictionary picker
+		english.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentOption = english;
+				dictionaryPickerMenu.setText(currentOption.getText());
+			}
+		});
+		vietnamese.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentOption = vietnamese;
+				dictionaryPickerMenu.setText(currentOption.getText());
+			}
+		});
+
+		// Button add a new word
+		btnAddNewWord.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String keyWord = newKeyWordText.getText();
+				String meaning = meaningOfTheNewWordText.getText();
+
+				// ----- Kiểm tra các ô nhập dữ liệu
+				if (keyWord.equals("") && meaning.equals("")) {
+					JOptionPane.showMessageDialog(
+							null,
+							"Bạn chưa nhập thông tin Từ khóa và Nghĩa",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				} else if (keyWord.equals("")) {
+					JOptionPane.showMessageDialog(
+							null,
+							"Bạn chưa nhập Từ khóa",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				} else if (meaning.equals("")) {
+					JOptionPane.showMessageDialog(
+							null,
+							"Bạn chưa nhập Nghĩa của từ \"" + keyWord + "\"",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				String dictionaryType = currentOption.getText();
+				Dictionary dictionary = new Dictionary();
+				String lookupType = "";
+
+				// ----- Thêm từ mới vào từ điển
+				if (dictionaryType.equals("Anh-Việt (Mặc định)")) {
+					dictionaryType = "Anh-Việt";
+					lookupType = "Anh->Việt";
+					dictionary = App.getDictionaryEngViet();
+					
+				} else if (dictionaryType.equals("Việt-Anh")) {
+					lookupType = "Việt->Anh";
+					dictionary = App.getDictionaryVietEng();
+				}
+				int result = MainHandler.addANewWordToDictionary(
+						dictionary, keyWord, meaning, lookupType, 0);
+				if (result == 0) {
+					int choice = JOptionPane.showConfirmDialog(
+							null,
+							"\"" + keyWord
+									+ "\" đã tồn tại trong từ điển Anh-Việt\n"
+									+ "Nhấn OK để đặt lại nghĩa cho từ \"" + keyWord + "\"",
+							"Xác nhận",
+							JOptionPane.OK_CANCEL_OPTION);
+					if (choice == JOptionPane.OK_OPTION) {
+						result = MainHandler.addANewWordToDictionary(
+								dictionary, keyWord, meaning, lookupType, 2);
+						if (result == 1) {
+							JOptionPane.showMessageDialog(
+									null,
+									"Đã cập nhật lại nghĩa của từ \"" + keyWord + "\" trong từ điển " + dictionaryType,
+									"Thông báo",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+				} else if (result == 1) {
+					JOptionPane.showMessageDialog(
+							null,
+							"Thêm thành công từ \"" + keyWord + "\" vào từ điển " + dictionaryType,
+							"Thông báo",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+	}
 }
