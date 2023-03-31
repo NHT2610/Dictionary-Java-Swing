@@ -120,6 +120,10 @@ public class MainHandler {
 		for (UserWord word : userWordsList) {
 			if (word.getLookupType().equals(lookupType) && word.getIsFavoritedValue()) {
 				favoritesList.remove(favoritesList.indexOf(new FavoriteItem(word.getWord(), word.getLookupType())));
+				word.setFavorite(false);
+				if (!App.userWordsList_flag) {
+					App.userWordsList_flag = true;
+				}
 				if (!App.favorites_flag) {
 					App.favorites_flag = true;
 				}

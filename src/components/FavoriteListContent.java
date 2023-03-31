@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -60,6 +61,7 @@ public class FavoriteListContent {
 
 		tableModel = new DefaultTableModel(tableData, columnTitles);
 		favoriteTable = new JTable(tableModel);
+		favoriteTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		// Cài font chữ đậm cho header columns
 		JTableHeader tableHeader = favoriteTable.getTableHeader();
 		tableHeader.setFont(tableHeader.getFont().deriveFont(Font.BOLD));
@@ -153,10 +155,19 @@ public class FavoriteListContent {
 				sortMenu.setText(currentOption.getText());
 			}
 		});
+
 		// Button delete a row
 		delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				int[] selectedRows = favoriteTable.getSelectedRows();
+				for (int i = selectedRows.length - 1; i >= 0; i--) {
+					String word = (String) favoriteTable.getValueAt(selectedRows[i], 1);
+					String lookupType = (String) favoriteTable.getValueAt(selectedRows[i], 2);
+					String note = (String) favoriteTable.getValueAt(selectedRows[i], 4);
+					tableModel.removeRow(selectedRows[i]);
+					FavoriteListContentHandler.removeAWordFromFavoritesList(word, lookupType, note);
+				}
 				updateTableData();
 			}
 		});
@@ -165,6 +176,10 @@ public class FavoriteListContent {
 		clearList.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				for (FavoriteItemView itemView : tableDataStored) {
+					FavoriteListContentHandler.removeAWordFromFavoritesList(itemView.word, itemView.lookupType, itemView.note);
+				}
+				tableDataStored.clear();
 				updateTableData();
 			}
 		});

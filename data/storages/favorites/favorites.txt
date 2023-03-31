@@ -4,8 +4,6 @@ happy##Anh->Việt##30/03/2023
 hiền nhân##Việt->Anh##30/03/2023
 nuisance##Anh->Việt##31/03/2023
 fall in love##Anh->Việt##31/03/2023
-Nguyễn Hữu Trực##Việt->Anh##31/03/2023
-computer system engineer##Anh->Việt##31/03/2023
 outstanding##Anh->Việt##31/03/2023
 giao phối##Việt->Anh##31/03/2023
 nấp bóng##Việt->Anh##31/03/2023
@@ -17,3 +15,7 @@ service station##Anh->Việt##31/03/2023
 application##Anh->Việt##31/03/2023
 gió trăng##Việt->Anh##31/03/2023
 hello##Anh->Việt##31/03/2023
+java##Anh->Việt##01/04/2023
+ăn##Việt->Anh##01/04/2023
+trường học##Việt->Anh##01/04/2023
+Nguyễn Hữu Trực##Việt->Anh##01/04/2023

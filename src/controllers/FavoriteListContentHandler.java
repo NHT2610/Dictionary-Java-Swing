@@ -6,7 +6,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 
+import app.App;
 import components.FavoriteItemView;
+import models.FavoriteItem;
+import models.UserWord;
 
 public class FavoriteListContentHandler {
 	public static String[][] sortTableByWord(String option) {
@@ -26,7 +29,7 @@ public class FavoriteListContentHandler {
 			Collections.sort(listItemView, comparator);
 			String[][] result = FavoriteItemView.convertArrayListToArray(listItemView);
 			return result;
-			
+
 		} else if (option.equals("Thứ tự từ Z đến A")) {
 			Collator collator = Collator.getInstance(
 					new Locale.Builder().setLanguage("vi").setRegion("VN").build());
@@ -41,5 +44,25 @@ public class FavoriteListContentHandler {
 			return result;
 		}
 		return null;
+	}
+
+	public static boolean removeAWordFromFavoritesList(String word, String lookupType, String note) {
+		try {
+			ArrayList<FavoriteItem> favoritesList = App.getFavorites();
+			if (note.equals("Từ của người dùng")) {
+				favoritesList.remove(FavoriteItem.getIndexOfElement(favoritesList, word, lookupType));
+				App.favorites_flag = true;
+				App.getUserWordsList().get(UserWord.getIndexOfElement(App.getUserWordsList(), word, lookupType))
+						.setFavorite(false);
+				App.userWordsList_flag = true;
+			} else if (note.equals("")) {
+				favoritesList.remove(FavoriteItem.getIndexOfElement(favoritesList, word, lookupType));
+				App.favorites_flag = true;
+			}
+			return true;
+		} catch (Exception e) {
+			System.out.println("Error removeAWordFromFavoritesList(): " + e.getMessage());
+			return false;
+		}
 	}
 }
