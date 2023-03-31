@@ -226,6 +226,7 @@ public class MainContent {
 							MainHandler.markFavorite(App.getUserWordsList(), new UserWord(keyWord, lookupType));
 						}
 						App.getFavorites().add(newFavoriteItem);
+						App.favorites_flag = true;
 						JOptionPane.showMessageDialog(
 								null,
 								"Đã thêm từ \"" + keyWord + "\" vào danh sách yêu thích",

@@ -9,7 +9,65 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import app.App;
+
 import java.awt.*;
+import java.util.ArrayList;
+import models.FavoriteItem;
+import models.UserWord;
+
+class FavoriteItemView {
+	public String id;
+	public String word;
+	public String lookupType;
+	public String dateAdded;
+	public String note;
+
+	public FavoriteItemView() {
+
+	}
+
+	public FavoriteItemView(String id, String word, String lookupType, String dateAdded, String note) {
+		this.id = id;
+		this.word = word;
+		this.lookupType = lookupType;
+		this.dateAdded = dateAdded;
+		this.note = note;
+	}
+
+	public static ArrayList<FavoriteItemView> getFavoritesListView() {
+		ArrayList<FavoriteItemView> result = new ArrayList<FavoriteItemView>();
+		ArrayList<FavoriteItem> favoritesList = App.getFavorites();
+		for (FavoriteItem item : favoritesList) {
+			FavoriteItemView newItem = new FavoriteItemView();
+			newItem.id = Integer.toString(favoritesList.indexOf(item) + 1);
+			newItem.word = item.getWord();
+			newItem.lookupType = item.getLookupType();
+			newItem.dateAdded = App.DATE_FORMAT.format(item.getDateAdded());
+			UserWord userWord = new UserWord(item.getWord(), item.getLookupType());
+			if (App.getUserWordsList().contains(userWord)) {
+				newItem.note = "Người dùng thêm";
+			} else {
+				newItem.note = "";
+			}
+			result.add(newItem);
+		}
+		return result;
+	}
+
+	public static String[][] convertArrayListToArray(ArrayList<FavoriteItemView> list) {
+		String[][] result = new String[list.size()][5];
+		for (int i = 0; i < list.size(); i++) {
+			FavoriteItemView item = list.get(i);
+			result[i][0] = item.id;
+			result[i][1] = item.word;
+			result[i][2] = item.lookupType;
+			result[i][3] = item.dateAdded;
+			result[i][4] = item.note;
+		}
+		return result;
+	}
+}
 
 public class FavoriteListContent {
 	private JPanel favoriteListContentPanel;
@@ -19,9 +77,10 @@ public class FavoriteListContent {
 
 	private JPanel favoriteListDetailsPanel;
 	private DefaultTableModel tableModel;
-	private final String[] columnTitles = { "STT", "Từ", "Nghĩa", "Loại tra cứu", "Lựa chọn" };
+	private final String[] columnTitles = { "STT", "Từ", "Loại tra cứu", "Ngày thêm", "Ghi chú" };
 	private JScrollPane scrollPane;
 	private JTable favoriteTable;
+	private ArrayList<FavoriteItemView> tableDataStored;
 
 	private JPanel optionPanel;
 	private JButton delete;
@@ -39,19 +98,15 @@ public class FavoriteListContent {
 		tableName.setFont(new Font("Arial", Font.BOLD, 20));
 
 		favoriteListDetailsPanel = new JPanel(new FlowLayout());
-		String[][] dataTest = {
-				{ "1", "Anh", "Anh", "Anh->Việt", "" },
-				{ "2", "Yêu", "Yêu", "Anh->Việt", "" },
-				{ "3", "Em", "Em", "Việt->Anh", "" },
-				{ "4", "Nhiều", "Anh", "Anh->Việt", "" },
-		};
-
-		tableModel = new DefaultTableModel(dataTest, columnTitles);
+		tableDataStored = FavoriteItemView.getFavoritesListView();
+		String[][] tableData = FavoriteItemView.convertArrayListToArray(tableDataStored);
+		
+		tableModel = new DefaultTableModel(tableData, columnTitles);
 		favoriteTable = new JTable(tableModel);
 		// Cài font chữ đậm cho header columns
 		JTableHeader tableHeader = favoriteTable.getTableHeader();
 		tableHeader.setFont(tableHeader.getFont().deriveFont(Font.BOLD));
-		
+
 		favoriteTable.setPreferredScrollableViewportSize(new Dimension(800, 265));
 		scrollPane = new JScrollPane(favoriteTable);
 		favoriteTable.setFillsViewportHeight(true);
@@ -74,6 +129,12 @@ public class FavoriteListContent {
 		optionPanel.add(clearList);
 		favoriteListContentPanel.add(optionPanel, BorderLayout.SOUTH);
 
+		registerListenerHandlers();
+
 		return favoriteListContentPanel;
+	}
+
+	private void registerListenerHandlers() {
+		
 	}
 }

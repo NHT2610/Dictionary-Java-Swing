@@ -1,1 +1,2 @@
-fall in love##Anh->Việt##false
+fall in love##Anh->Việt##true
+Nguyễn Hữu Trực##Việt->Anh##true
