@@ -216,7 +216,7 @@ public class MainContent {
 					if (isExisted) {
 						JOptionPane.showMessageDialog(
 								null,
-								"Từ \"" + keyWord + "\" đã được thêm vào danh sách yêu thích trước đó",
+								"Từ \"" + keyWord + "\" đã tồn tại trong danh sách yêu thích trước đó",
 								"Thông báo",
 								JOptionPane.INFORMATION_MESSAGE);
 					} else {

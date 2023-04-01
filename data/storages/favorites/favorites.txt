@@ -19,3 +19,8 @@ java##Anh->Việt##01/04/2023
 ăn##Việt->Anh##01/04/2023
 trường học##Việt->Anh##01/04/2023
 Nguyễn Hữu Trực##Việt->Anh##01/04/2023
+dictionary##Anh->Việt##01/04/2023
+beautiful##Anh->Việt##01/04/2023
+opportunity##Anh->Việt##01/04/2023
+(logic học)##Anh->Việt##01/04/2023
+hyperparathyroidism##Anh->Việt##01/04/2023

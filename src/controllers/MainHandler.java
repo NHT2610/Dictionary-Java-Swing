@@ -70,8 +70,36 @@ public class MainHandler {
 		}
 	}
 
+	public static int addAWordToFavoritesList(String word, String lookupType, int option) {
+		ArrayList<FavoriteItem> favoritesList = App.getFavorites();
+		switch (option) {
+			case 0:
+				if (favoritesList.contains(new FavoriteItem(word, lookupType))) {
+					return 0;
+				}
+			case 1:
+				favoritesList.add(new FavoriteItem(word, lookupType));
+				App.favorites_flag = true;
+				if (App.getUserWordsList().contains(new UserWord(word, lookupType))) {
+					ArrayList<UserWord> userWordsList = App.getUserWordsList();
+					userWordsList.get(UserWord.getIndexOfElement(userWordsList, word, lookupType)).setIsFavorited();
+					App.userWordsList_flag = true;
+				}
+				return 1;
+			case 2:
+				favoritesList.add(new FavoriteItem(word, lookupType));
+				App.favorites_flag = true;
+				return 1;
+			default:
+				return -1;
+		}
+	}
+
 	public static boolean removeAWordFromDictionary(Dictionary dictionary, String word, String lookupType) {
 		try {
+			if (!dictionary.getDictionaryData().containsKey(word)) {
+				return false;
+			}
 			// ===== Delete in dictionary =====
 			String delWord = dictionary.removeAWord(word);
 			if (lookupType.equals("Anh->Việt")) {

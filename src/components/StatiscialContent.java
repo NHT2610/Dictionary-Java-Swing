@@ -3,9 +3,11 @@ package components;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -15,6 +17,8 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import app.App;
+import controllers.MainHandler;
+import models.Dictionary;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -118,6 +122,7 @@ public class StatiscialContent {
 		String[][] tableData = StatiscialItem.convertArrayListToArray(tableDataStored);
 		tableModel = new DefaultTableModel(tableData, columnTitles);
 		detailTable = new JTable(tableModel);
+		detailTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		// Cài font chữ đậm cho header columns
 		JTableHeader tableHeader = detailTable.getTableHeader();
 		tableHeader.setFont(tableHeader.getFont().deriveFont(Font.BOLD));
@@ -164,6 +169,7 @@ public class StatiscialContent {
 	}
 
 	private void registerListenerHandlers() {
+		// Button display statiscial table
 		btnDisplay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -172,6 +178,60 @@ public class StatiscialContent {
 				Date endDate = (Date) model2.getValue();
 				// Cập nhật dữ liệu lên giao diện
 				updateTable(startDate, endDate);
+			}
+		});
+
+		// Button favortite
+		favorite.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int[] selectedRows = detailTable.getSelectedRows();
+				for (int i = selectedRows.length - 1; i >= 0; i--) {
+					String word = (String) detailTable.getValueAt(selectedRows[i], 1);
+					String lookupType = (String) detailTable.getValueAt(selectedRows[i], 2);
+					int result = MainHandler.addAWordToFavoritesList(word, lookupType, 0);
+					if (result == 0) {
+						JOptionPane.showMessageDialog(
+								null,
+								"Từ \"" + word + "\" đã tồn tại trong danh sách yêu thích trước đó",
+								"Thông báo",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else if (result == 1) {
+						System.out.println("Added the word \"" + word + "\" to favorites list!");
+					}
+				}
+			}
+		});
+
+		// Button delete
+		delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int[] selectedRows = detailTable.getSelectedRows();
+				for (int i = selectedRows.length - 1; i >= 0; i--) {
+					String word = (String) detailTable.getValueAt(selectedRows[i], 1);
+					String lookupType = (String) detailTable.getValueAt(selectedRows[i], 2);
+					tableModel.removeRow(selectedRows[i]);
+
+					Dictionary dictionary = new Dictionary();
+					if (lookupType.equals("Anh->Việt")) {
+						dictionary = App.getDictionaryEngViet();
+					} else if (lookupType.equals("Việt->Anh")) {
+						dictionary = App.getDictionaryVietEng();
+					}
+					boolean result = MainHandler.removeAWordFromDictionary(dictionary, word, lookupType);
+					if (result) {
+						System.out.println("Delete the word \"" + word + "\" successfully!");
+					} else {
+						JOptionPane.showMessageDialog(
+								null,
+								"Không thể xóa từ \"" + word + "\"\n"
+										+ "Từ \"" + word + "\" có thể không tồn tại trong từ điển \nhoặc đã bị xóa trước đó",
+								"Lỗi",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				updateTable((Date) model1.getValue(), (Date) model2.getValue());
 			}
 		});
 	}
