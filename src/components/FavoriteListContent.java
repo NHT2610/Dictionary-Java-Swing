@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -176,11 +177,18 @@ public class FavoriteListContent {
 		clearList.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for (FavoriteItemView itemView : tableDataStored) {
-					FavoriteListContentHandler.removeAWordFromFavoritesList(itemView.word, itemView.lookupType, itemView.note);
+				int choice = JOptionPane.showConfirmDialog(
+						null,
+						"Bạn có muốn xóa toàn bộ danh sách yêu thích?",
+						"Xác nhận",
+						JOptionPane.OK_CANCEL_OPTION);
+				if (choice == JOptionPane.OK_OPTION) {
+					for (FavoriteItemView itemView : tableDataStored) {
+						FavoriteListContentHandler.removeAWordFromFavoritesList(itemView.word, itemView.lookupType, itemView.note);
+					}
+					tableDataStored.clear();
+					updateTableData();
 				}
-				tableDataStored.clear();
-				updateTableData();
 			}
 		});
 	}

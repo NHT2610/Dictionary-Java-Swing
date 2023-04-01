@@ -6,18 +6,22 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.text.DateFormatter;
 
-import org.jdatepicker.JDatePicker;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import app.App;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 public class StatiscialContent {
@@ -27,17 +31,20 @@ public class StatiscialContent {
 	private JPanel tableNamePanel;
 	private JLabel tableName;
 	private JLabel from;
-	private JDatePicker startDate;
+	private UtilDateModel model1;
+	private JDatePickerImpl startDate;
 	private JLabel to;
-	private JDatePicker endDate;
+	private UtilDateModel model2;
+	private JDatePickerImpl endDate;
 	private final String datePattern = "dd/MM/yyyy";
 	private JButton btnDisplay;
 
 	private JPanel detailTablePanel;
-	private DefaultTableModel tableModel;
+	private static DefaultTableModel tableModel;
 	private JTable detailTable;
 	private JScrollPane scrollPane;
-	private String[] columnTitles = { "STT", "Từ", "Số lần tra cứu", "Loại tra cứu", "Lựa chọn" };
+	private static final String[] columnTitles = { "STT", "Từ", "Loại tra cứu", "Số lần tra cứu", "Ghi chú" };
+	private static ArrayList<StatiscialItem> tableDataStored;
 
 	private JPanel optionPanel;
 	private JButton favorite;
@@ -74,132 +81,47 @@ public class StatiscialContent {
 		from = new JLabel("Từ: ");
 		to = new JLabel("Đến: ");
 
-		DateFormatter dateFormatter = new DateFormatter(new SimpleDateFormat(datePattern));
-		UtilDateModel model = new UtilDateModel();
-		startDate = new JDatePickerImpl(new JDatePanelImpl(model, setValuei18nStrings()), dateFormatter);
-		endDate = new JDatePickerImpl(new JDatePanelImpl(model, setValuei18nStrings()), dateFormatter);
+		AbstractFormatter dateFormatter = new AbstractFormatter() {
+			@Override
+			public Object stringToValue(String text) throws ParseException {
+				throw new UnsupportedOperationException("Unimplemented method 'stringToValue'");
+			}
+
+			@Override
+			public String valueToString(Object value) throws ParseException {
+				if (value != null) {
+					Calendar calendar = (Calendar) value;
+					String strDate = App.DATE_FORMAT.format(calendar.getTime());
+					return strDate;
+				}
+				return "";
+			}
+		};
+
+		Calendar startDateCalendar = Calendar.getInstance();
+		startDateCalendar.set(2023, 2, 29);
+		model1 = new UtilDateModel(startDateCalendar.getTime());
+		startDate = new JDatePickerImpl(new JDatePanelImpl(model1, setValuei18nStrings()), dateFormatter);
+
+		Calendar endDateCalendar = Calendar.getInstance();
+		endDateCalendar.set(
+				endDateCalendar.get(Calendar.YEAR),
+				endDateCalendar.get(Calendar.MONTH),
+				endDateCalendar.get(Calendar.DAY_OF_MONTH));
+		model2 = new UtilDateModel(endDateCalendar.getTime());
+		endDate = new JDatePickerImpl(new JDatePanelImpl(model2, setValuei18nStrings()), dateFormatter);
 		btnDisplay = new JButton("Hiển thị");
 		btnDisplay.setBackground(BUTTON_COLOR);
 
-		String[][] testData = {
-				{ "1", "Anh", "9", "abc", "" },
-				{ "2", "Yêu", "8", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "3", "Em", "7", "abc", "" },
-				{ "10", "Em", "7", "abc", "" },
-		};
 		detailTablePanel = new JPanel(new FlowLayout());
-		tableModel = new DefaultTableModel(testData, columnTitles);
+		tableDataStored = new ArrayList<StatiscialItem>();
+		String[][] tableData = StatiscialItem.convertArrayListToArray(tableDataStored);
+		tableModel = new DefaultTableModel(tableData, columnTitles);
 		detailTable = new JTable(tableModel);
 		// Cài font chữ đậm cho header columns
 		JTableHeader tableHeader = detailTable.getTableHeader();
 		tableHeader.setFont(tableHeader.getFont().deriveFont(Font.BOLD));
-		
+
 		detailTable.setPreferredScrollableViewportSize(new Dimension(800, 230));
 		scrollPane = new JScrollPane(detailTable);
 		detailTable.setFillsViewportHeight(true);
@@ -245,8 +167,18 @@ public class StatiscialContent {
 		btnDisplay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Lấy ra ngày trong các JDatePicker
+				Date startDate = (Date) model1.getValue();
+				Date endDate = (Date) model2.getValue();
+				// Cập nhật dữ liệu lên giao diện
+				updateTable(startDate, endDate);
 			}
 		});
+	}
+
+	public static void updateTable(Date start, Date end) {
+		tableDataStored = StatiscialItem.getStatiscialList(start, end);
+		String[][] tableData = StatiscialItem.convertArrayListToArray(tableDataStored);
+		tableModel.setDataVector(tableData, columnTitles);
 	}
 }
