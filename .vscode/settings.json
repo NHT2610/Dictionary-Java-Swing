@@ -4,6 +4,17 @@
 	],
 	"java.project.outputPath": "bin",
 	"java.project.referencedLibraries": [
-		"lib/**/*.jar"
+		{
+			"name": "lib",
+			"path": "lib/**/*.jar"
+		},
+		{
+			"name": "data",
+			"path": "data/**/*"
+		},
+		{
+			"name": "res",
+			"path": "res/**/*"
+		}
 	]
 }

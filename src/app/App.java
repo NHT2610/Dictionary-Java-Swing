@@ -8,6 +8,7 @@ import controllers.ReadAndWriteItem;
 import models.*;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,7 +90,21 @@ public class App extends JPanel {
 
 	private static void createAndShowGUI() {
 		JFrame frame = new JFrame("Từ Điển Anh-Việt/Việt-Anh");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int confirmed = JOptionPane.showConfirmDialog(
+						frame,
+						"Bạn có chắc chắn muốn tắt ứng dụng?",
+						"Xác nhận",
+						JOptionPane.YES_NO_OPTION);
+
+				if (confirmed == JOptionPane.YES_OPTION) {
+					System.exit(0);
+				}
+			}
+		});
 		App app = new App();
 		prepareData();
 		app.addComponentsToPane(frame.getContentPane());

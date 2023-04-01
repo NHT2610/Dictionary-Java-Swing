@@ -1,3 +1,3 @@
 fall in love##Anh->Việt##true
-Nguyễn Hữu Trực##Việt->Anh##true
 java##Anh->Việt##true
+Nguyễn Hữu Trực##Anh->Việt##true
