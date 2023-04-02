@@ -1,0 +1,1 @@
+java --enable-preview -jar release/20120608.jar
