@@ -1,11 +1,5 @@
-flew##Anh->Việt##30/03/2023
-abc##Anh->Việt##30/03/2023
-happy##Anh->Việt##30/03/2023
-hiền nhân##Việt->Anh##30/03/2023
-nuisance##Anh->Việt##31/03/2023
 fall in love##Anh->Việt##31/03/2023
 outstanding##Anh->Việt##31/03/2023
-giao phối##Việt->Anh##31/03/2023
 nấp bóng##Việt->Anh##31/03/2023
 cảm tính##Việt->Anh##31/03/2023
 presentment##Anh->Việt##31/03/2023
@@ -16,11 +10,16 @@ application##Anh->Việt##31/03/2023
 gió trăng##Việt->Anh##31/03/2023
 hello##Anh->Việt##31/03/2023
 java##Anh->Việt##01/04/2023
-ăn##Việt->Anh##01/04/2023
 trường học##Việt->Anh##01/04/2023
 dictionary##Anh->Việt##01/04/2023
 beautiful##Anh->Việt##01/04/2023
 opportunity##Anh->Việt##01/04/2023
-(logic học)##Anh->Việt##01/04/2023
 hyperparathyroidism##Anh->Việt##01/04/2023
 Nguyễn Hữu Trực##Anh->Việt##01/04/2023
+implication##Anh->Việt##02/04/2023
+look forward to##Anh->Việt##03/04/2023
+distribution##Anh->Việt##03/04/2023
+obtain##Anh->Việt##03/04/2023
+variety##Anh->Việt##03/04/2023
+represent##Anh->Việt##03/04/2023
+attendant##Anh->Việt##03/04/2023

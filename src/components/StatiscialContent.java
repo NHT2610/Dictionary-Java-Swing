@@ -3,6 +3,9 @@ package components;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,6 +20,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import app.App;
+import controllers.LookUpToken;
 import controllers.MainHandler;
 import models.Dictionary;
 
@@ -51,6 +55,16 @@ public class StatiscialContent {
 	private static ArrayList<StatiscialItem> tableDataStored;
 
 	private JPanel optionPanel;
+	private JPanel sortPanel;
+	private JLabel sortLabel;
+	private JMenuBar sortMenuBar;
+	private JMenu sortMenu;
+	private JMenuItem defaultOption, AtoZOption, ZtoAOption, ascendingN, decreaseN; 
+	private static JMenuItem currentOption;
+	private JButton btnSort;
+
+	private JPanel favoriteAndDeletePanel;
+	private JButton viewMeaning;
 	private JButton favorite;
 	private JButton delete;
 
@@ -131,12 +145,28 @@ public class StatiscialContent {
 		scrollPane = new JScrollPane(detailTable);
 		detailTable.setFillsViewportHeight(true);
 
-		optionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		optionPanel = new JPanel(new GridLayout(1, 2));
+		sortPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		sortLabel = new JLabel("Sắp xếp: ");
+		sortMenuBar = new JMenuBar();
+		sortMenuBar.setBackground(Color.LIGHT_GRAY);
+		sortMenu = new JMenu("Mặc định");
+		defaultOption = new JMenuItem("Mặc định");
+		AtoZOption = new JMenuItem("Từ A đến Z theo từ");
+		ZtoAOption = new JMenuItem("Từ Z đến A theo từ");
+		ascendingN = new JMenuItem("Số lần tra cứu tăng dần");
+		decreaseN = new JMenuItem("Số lần tra cứu giảm dần");
+		currentOption = defaultOption;
+		btnSort = new JButton("Sắp xếp");
+		btnSort.setBackground(Color.getHSBColor(120f / 360f, 0.5f, 0.8f));
+
+		favoriteAndDeletePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		viewMeaning = new JButton("Xem nghĩa");
+		viewMeaning.setBackground(Color.getHSBColor(120f / 360f, 0.5f, 0.8f));
 		favorite = new JButton("Yêu thích");
 		favorite.setBackground(FAVORITE_BUTTON_COLOR);
 		delete = new JButton("Xóa khỏi từ điển");
 		delete.setBackground(DELETE_BUTTON_COLOR);
-
 	}
 
 	public JPanel getStatiscialContentPanel() {
@@ -160,8 +190,22 @@ public class StatiscialContent {
 		detailTablePanel.add(scrollPane);
 		statiscialContentPanel.add(detailTablePanel, BorderLayout.CENTER);
 
-		optionPanel.add(favorite);
-		optionPanel.add(delete);
+		sortPanel.add(sortLabel);
+		sortMenu.add(defaultOption);
+		sortMenu.add(ascendingN);
+		sortMenu.add(decreaseN);
+		sortMenu.add(AtoZOption);
+		sortMenu.add(ZtoAOption);
+		sortMenuBar.add(sortMenu);
+		sortPanel.add(sortMenuBar);
+		sortPanel.add(btnSort);
+		optionPanel.add(sortPanel);
+
+		favoriteAndDeletePanel.add(viewMeaning);
+		favoriteAndDeletePanel.add(favorite);
+		favoriteAndDeletePanel.add(delete);
+		optionPanel.add(favoriteAndDeletePanel);
+
 		statiscialContentPanel.add(optionPanel, BorderLayout.SOUTH);
 
 		registerListenerHandlers();
@@ -178,6 +222,80 @@ public class StatiscialContent {
 				Date endDate = (Date) model2.getValue();
 				// Cập nhật dữ liệu lên giao diện
 				updateTable(startDate, endDate);
+			}
+		});
+
+		// Sort menu
+		AtoZOption.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentOption = AtoZOption;
+				sortMenu.setText(currentOption.getText());
+			} 
+		});
+		ZtoAOption.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentOption = ZtoAOption;
+				sortMenu.setText(currentOption.getText());
+			}
+		});
+		ascendingN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentOption = ascendingN;
+				sortMenu.setText(currentOption.getText());
+			}
+		});
+		decreaseN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentOption = decreaseN;
+				sortMenu.setText(currentOption.getText());
+			}
+		});
+
+		// Button sort table
+		btnSort.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String chose = currentOption.getText();
+				// Lấy ra ngày trong các JDatePicker
+				Date startDate = (Date) model1.getValue();
+				Date endDate = (Date) model2.getValue();
+				String[][] tableData = MainHandler.sortStatiscialTableByOption(chose, startDate, endDate);
+				if (tableData != null) {
+					tableModel.setDataVector(tableData, columnTitles);
+				} else {
+					System.out.println("Error btnSort");
+				}
+			}
+		});
+
+		// Button view meaning
+		viewMeaning.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int[] selectedRows = detailTable.getSelectedRows();
+				String word = (String) detailTable.getValueAt(selectedRows[0], 1);
+				String lookupType = (String) detailTable.getValueAt(selectedRows[0], 2);
+				Dictionary dictionary = new Dictionary();
+				if (lookupType.equals("Anh->Việt")) {
+					dictionary = App.getDictionaryEngViet();
+				} else if (lookupType.equals("iệt->Anh")) {
+					dictionary = App.getDictionaryVietEng();
+				}
+				LookUpToken token = new LookUpToken(false, "");
+				token = MainHandler.lookup(word, dictionary);
+				if (token.getStatus()) {
+					new DisplayMeaningWindow(word, token.getMessage()).setVisible(true);
+				} else {
+					JOptionPane.showMessageDialog(
+							null,
+							"Không tìm thấy từ \"" + word + "\" trong từ điển",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 
@@ -238,7 +356,7 @@ public class StatiscialContent {
 
 	public static void updateTable(Date start, Date end) {
 		tableDataStored = StatiscialItem.getStatiscialList(start, end);
-		String[][] tableData = StatiscialItem.convertArrayListToArray(tableDataStored);
+		String[][] tableData = MainHandler.sortStatiscialTableByOption(currentOption.getText(), start, end);
 		tableModel.setDataVector(tableData, columnTitles);
 	}
 }

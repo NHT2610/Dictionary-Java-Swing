@@ -1,3 +1,5 @@
 fall in love##Anh->Việt##true
 java##Anh->Việt##true
 Nguyễn Hữu Trực##Anh->Việt##true
+look forward to##Anh->Việt##true
+in place of##Anh->Việt##false

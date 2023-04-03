@@ -14,7 +14,11 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import app.App;
 import controllers.FavoriteListContentHandler;
+import controllers.LookUpToken;
+import controllers.MainHandler;
+import models.Dictionary;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -38,13 +42,16 @@ public class FavoriteListContent {
 	private JLabel sortLabel;
 	private JMenuBar sortMenuBar;
 	private JMenu sortMenu;
-	private JMenuItem defaultOption, AtoZOption, ZtoAOption, currentOption;
+	private JMenuItem defaultOption, AtoZOption, ZtoAOption;
+	private static JMenuItem currentOption;
 	private JButton btnSort;
 
 	private JPanel delAndClsPanel;
+	private JButton viewMeaning;
 	private JButton delete;
 	private JButton clearList;
 
+	private final Color VIEWMEANING_BUTTON_COLOR = Color.getHSBColor(120f / 360f, 0.5f, 0.8f);
 	private final Color DELETE_BUTTON_COLOR = Color.getHSBColor(0, 33, 78);
 	private final Color CLEAR_BUTTON_COLOR = Color.getHSBColor(0, 0.5f, 0.85f);
 
@@ -86,6 +93,8 @@ public class FavoriteListContent {
 		btnSort.setBackground(Color.getHSBColor(120f / 360f, 0.5f, 0.8f));
 
 		delAndClsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		viewMeaning = new JButton("Xem nghĩa");
+		viewMeaning.setBackground(VIEWMEANING_BUTTON_COLOR);
 		delete = new JButton("Xóa");
 		delete.setBackground(DELETE_BUTTON_COLOR);
 		clearList = new JButton("Xóa danh sách");
@@ -107,6 +116,7 @@ public class FavoriteListContent {
 		sortPanel.add(sortMenuBar);
 		sortPanel.add(btnSort);
 
+		delAndClsPanel.add(viewMeaning);
 		delAndClsPanel.add(delete);
 		delAndClsPanel.add(clearList);
 
@@ -157,6 +167,33 @@ public class FavoriteListContent {
 			}
 		});
 
+		// Button view meaning
+		viewMeaning.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int[] selectedRows = favoriteTable.getSelectedRows();
+				String word = (String) favoriteTable.getValueAt(selectedRows[0], 1);
+				String lookupType = (String) favoriteTable.getValueAt(selectedRows[0], 2);
+				Dictionary dictionary = new Dictionary();
+				if (lookupType.equals("Anh->Việt")) {
+					dictionary = App.getDictionaryEngViet();
+				} else if (lookupType.equals("iệt->Anh")) {
+					dictionary = App.getDictionaryVietEng();
+				}
+				LookUpToken token = new LookUpToken(false, "");
+				token = MainHandler.lookup(word, dictionary);
+				if (token.getStatus()) {
+					new DisplayMeaningWindow(word, token.getMessage()).setVisible(true);
+				} else {
+					JOptionPane.showMessageDialog(
+							null,
+							"Không tìm thấy từ \"" + word + "\" trong từ điển",
+							"Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
 		// Button delete a row
 		delete.addActionListener(new ActionListener() {
 			@Override
@@ -199,7 +236,7 @@ public class FavoriteListContent {
 
 	public static void updateTableData() {
 		tableDataStored = FavoriteItemView.getFavoritesListView();
-		String[][] tableData = FavoriteItemView.convertArrayListToArray(tableDataStored);
+		String[][] tableData = FavoriteListContentHandler.sortTableByWord(currentOption.getText());
 		tableModel.setDataVector(tableData, columnTitles);
 	}
 }

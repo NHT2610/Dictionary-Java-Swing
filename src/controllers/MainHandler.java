@@ -1,10 +1,15 @@
 package controllers;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import app.App;
+import components.StatiscialItem;
 import models.Dictionary;
 import models.FavoriteItem;
 import models.LookupInformation;
@@ -177,5 +182,61 @@ public class MainHandler {
 				}
 			}
 		}
+	}
+
+	public static String[][] sortStatiscialTableByOption(String option, Date start, Date end) {
+		ArrayList<StatiscialItem> itemList = StatiscialItem.getStatiscialList(start, end);
+		if (option.equals("Mặc định")) {
+			return StatiscialItem.convertArrayListToArray(itemList);
+
+		} else if (option.equals("Số lần tra cứu tăng dần")) {
+			Comparator<StatiscialItem> comparator = new Comparator<StatiscialItem>() {
+				@Override
+				public int compare(StatiscialItem item1, StatiscialItem item2) {
+					return Integer.compare(Integer.parseInt(item1.numberOfLookups), Integer.parseInt(item2.numberOfLookups));
+				}
+			};
+			Collections.sort(itemList, comparator);
+			String[][] result = StatiscialItem.convertArrayListToArray(itemList);
+			return result;
+
+		} else if (option.equals("Số lần tra cứu giảm dần")) {
+			Comparator<StatiscialItem> comparator = new Comparator<StatiscialItem>() {
+				@Override
+				public int compare(StatiscialItem item1, StatiscialItem item2) {
+					return Integer.compare(Integer.parseInt(item2.numberOfLookups), Integer.parseInt(item1.numberOfLookups));
+				}
+			};
+			Collections.sort(itemList, comparator);
+			String[][] result = StatiscialItem.convertArrayListToArray(itemList);
+			return result;
+
+		} else if (option.equals("Từ A đến Z theo từ")) {
+			Collator collator = Collator.getInstance(
+					new Locale.Builder().setLanguage("vi").setRegion("VN").build());
+			Comparator<StatiscialItem> comparator = new Comparator<StatiscialItem>() {
+				@Override
+				public int compare(StatiscialItem item1, StatiscialItem item2) {
+					return collator.compare(item1.word, item2.word);
+				}
+			};
+			Collections.sort(itemList, comparator);
+			String[][] result = StatiscialItem.convertArrayListToArray(itemList);
+			return result;
+
+		} else if (option.equals("Từ Z đến A theo từ")) {
+			Collator collator = Collator.getInstance(
+					new Locale.Builder().setLanguage("vi").setRegion("VN").build());
+			Comparator<StatiscialItem> comparator = new Comparator<StatiscialItem>() {
+				@Override
+				public int compare(StatiscialItem item1, StatiscialItem item2) {
+					return collator.compare(item2.word, item1.word);
+				}
+			};
+			Collections.sort(itemList, comparator);
+			String[][] result = StatiscialItem.convertArrayListToArray(itemList);
+			return result;
+		}
+		return null;
 	}
 }
